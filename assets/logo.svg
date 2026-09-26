@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 32" width="160" height="32" role="img" aria-label="Cloud Engineering">
+  <g fill="none" stroke="#0a6e8a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 21.5h13.5a5 5 0 0 0 .6-9.96A7.2 7.2 0 0 0 9.6 10.2 4.9 4.9 0 0 0 9 21.5Z"/>
+  </g>
+  <text x="38" y="21.5" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#0b2545">Cloud Engineering</text>
+</svg>

@@ -1,0 +1,1727 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<script src="libs/clipboard/clipboard.min.js"></script>
+<script src="libs/quarto-html/tabby.min.js"></script>
+<script src="libs/quarto-html/popper.min.js"></script>
+<script src="libs/quarto-html/tippy.umd.min.js"></script>
+<link href="libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="libs/quarto-html/quarto-syntax-highlighting-bb62276ab45c84d9efd712f51ff97b5a.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.10.18">
+
+  <meta name="author" content="발표자 이름">
+  <title>프로젝트 제목</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="libs/revealjs/dist/reveal.css">
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+      }
+    pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+    div.sourceCode
+      { color: #24292e;  }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #24292e; } /* Normal */
+    code span.al { color: #ff5555; font-weight: bold; } /* Alert */
+    code span.an { color: #6a737d; } /* Annotation */
+    code span.at { color: #d73a49; } /* Attribute */
+    code span.bn { color: #005cc5; } /* BaseN */
+    code span.bu { color: #d73a49; } /* BuiltIn */
+    code span.cf { color: #d73a49; } /* ControlFlow */
+    code span.ch { color: #032f62; } /* Char */
+    code span.cn { color: #005cc5; } /* Constant */
+    code span.co { color: #6a737d; } /* Comment */
+    code span.cv { color: #6a737d; } /* CommentVar */
+    code span.do { color: #6a737d; } /* Documentation */
+    code span.dt { color: #d73a49; } /* DataType */
+    code span.dv { color: #005cc5; } /* DecVal */
+    code span.er { color: #ff5555; text-decoration: underline; } /* Error */
+    code span.ex { color: #d73a49; font-weight: bold; } /* Extension */
+    code span.fl { color: #005cc5; } /* Float */
+    code span.fu { color: #6f42c1; } /* Function */
+    code span.im { color: #032f62; } /* Import */
+    code span.in { color: #6a737d; } /* Information */
+    code span.kw { color: #d73a49; } /* Keyword */
+    code span.op { color: #24292e; } /* Operator */
+    code span.ot { color: #6f42c1; } /* Other */
+    code span.pp { color: #d73a49; } /* Preprocessor */
+    code span.re { color: #6a737d; } /* RegionMarker */
+    code span.sc { color: #005cc5; } /* SpecialChar */
+    code span.ss { color: #032f62; } /* SpecialString */
+    code span.st { color: #032f62; } /* String */
+    code span.va { color: #e36209; } /* Variable */
+    code span.vs { color: #032f62; } /* VerbatimString */
+    code span.wa { color: #ff5555; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="libs/revealjs/dist/theme/quarto-b87f258fd13d9c7fd9a0948cde04b5e0.css">
+  <link href="libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+  <!-- ---------------------------------------------------------------------------
+    cloudpres - 글꼴(fonts)
+
+    <head> 에 삽입됩니다. 덱에 글꼴을 넣는 방법은 두 가지입니다.
+
+    1) 구글 웹폰트 - 아래 <link>. 기본값은 본문 Noto Sans KR, 코드 Noto Sans Mono.
+       굵기를 더 쓰고 싶으면 wght 범위만 넓히면 됩니다.
+
+    2) 직접 가진 글꼴 파일 - .woff2 파일을 assets/fonts/에 넣고 아래 <style>
+       안에서 @font-face로 선언합니다. 여기 경로는 렌더된 .html 기준이므로
+       "assets/fonts/이름.woff2" 가 맞습니다. assets/를 _output/으로 복사하는
+       일은 _quarto.yml의 resources가 대신 해 줍니다.
+
+    어느 쪽이든 마지막에 theme.scss의 $cp-font-sans / $cp-font-mono가 그
+    family 이름을 가리키게 하면 끝입니다. README "글꼴 바꾸기" 참고.
+
+    폐쇄망이거나 프록시 뒤라면: 아래 <link> 세 줄을 지우고, .woff2 파일을
+    assets/fonts/에 넣은 뒤 2)번 경로만 쓰십시오.
+  --------------------------------------------------------------------------- -->
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300..700&amp;family=Noto+Sans+Mono:wght@400..700&amp;display=swap">
+
+  <style>
+    /* -------------------------------------------------------------------------
+       직접 가진 글꼴 파일. 주석을 풀고 이름과 파일명만 바꾸면 됩니다.
+       가변 폰트(variable font)면 블록 하나로 충분하고, 굵기별 파일이면
+       블록을 굵기 수만큼 복사하십시오.
+
+    @font-face {
+      font-family: "Pretendard";
+      src: url("assets/fonts/PretendardVariable.woff2") format("woff2-variations");
+      font-weight: 300 700;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "D2Coding";
+      src: url("assets/fonts/D2Coding.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+       ------------------------------------------------------------------------- */
+  </style>
+  <script src="libs/quarto-diagram/mermaid.min.js"></script>
+  <script src="libs/quarto-diagram/mermaid-init.js"></script>
+  <link href="libs/quarto-diagram/mermaid.css" rel="stylesheet">
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section class="quarto-title-block center">
+  <h1 class="title">프로젝트 제목</h1>
+  <p class="subtitle">부제를 여기에</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+발표자 이름
+</div>
+        <p class="quarto-title-affiliation">
+            Cloud 9
+          </p>
+    </div>
+</div>
+
+  <p class="date">2026년 9월 20일</p>
+</section>
+<section class="slide level2">
+<h2>목차</h2>
+<div class="steps cp-steps">
+<ul>
+<li class="fragment">왜 옮기는가, 그리고 왜 지금인가</li>
+<li class="fragment">현재 상태</li>
+<li class="fragment">목표 랜딩 존</li>
+<li class="fragment">웨이브 계획과 6R 처리 방침</li>
+<li class="fragment">코드로 만드는 랜딩 존</li>
+<li class="fragment">전환 런북과 Go / No-Go 게이트</li>
+<li class="fragment">리스크, 책임, 일정</li>
+</ul>
+</div>
+<aside class="notes">
+<p>60초 안에 끝내십시오. 이 슬라이드에서 남길 것은 하나뿐입니다 — Go / No-Go 게이트는 <em>그들이 내리는 결정</em>이고, 덱 뒤쪽에 다시 나온다는 것.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section class="slide level2">
+<h2>왜 지금인가</h2>
+<p>VMware 갱신 시점은 <strong>2027년 3월</strong>입니다. 그 전에 세 가지가 바뀝니다.</p>
+<div class="focus">
+<p>갱신 견적은 이미 <span class="hl-risk">42% 유휴 상태</span>인 용량에 대해 <span class="hl">3년간 24억 원</span>입니다.</p>
+</div>
+<ul>
+<li>분당 IDC 계약이 같은 분기에 종료됩니다</li>
+<li>하이퍼바이저 호스트 4대 중 2대가 2026년에 하드웨어 지원 종료됩니다</li>
+<li>데이터 플랫폼 팀은 이미 옮겼고, 남은 입주 조직은 우리뿐입니다</li>
+</ul>
+<aside class="notes">
+<p><code>.focus</code>는 슬라이드의 나머지를 흐리게 만들어, 말하는 동안 그 숫자만 읽히게 합니다. 제목은 일부러 선명하게 둡니다.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section class="slide level2">
+<h2>현재 상태</h2>
+<div class="cell" data-reveal="true" data-fig-width="9" data-layout-align="center">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  subgraph DC["분당 IDC"]
+    ESX["VMware ESXi&lt;br/&gt;호스트 4대"]
+    SAN[("NetApp SAN&lt;br/&gt;120 TB")]
+    APP["애플리케이션 61개"]
+    ESX --- SAN
+    ESX --- APP
+  end
+  USERS["임직원 VPN"] --&gt; DC
+  DC --&gt; AZ["Azure&lt;br/&gt;데이터 플랫폼만"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<ul>
+<li>애플리케이션 61개, VM 214대, 소유 조직 9곳</li>
+<li><span class="hl-risk">믿을 만한 현행 CMDB가 없습니다</span> — 디스커버리 진행 중</li>
+</ul>
+</section>
+<section class="slide level2">
+<h2>목표 랜딩 존</h2>
+<div class="cell" data-reveal="true" data-fig-width="9" data-layout-align="center">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TB
+  MG["관리 그룹: Cloud 9"] --&gt; PLAT["플랫폼"]
+  MG --&gt; LZ["랜딩 존"]
+  PLAT --&gt; CONN["연결&lt;br/&gt;vWAN + Firewall"]
+  PLAT --&gt; IDENT["아이덴티티"]
+  PLAT --&gt; MGMT["관리&lt;br/&gt;Log Analytics"]
+  LZ --&gt; CORP["corp-prod"]
+  LZ --&gt; CORPN["corp-nonprod"]
+  LZ --&gt; ONL["online"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<div class="box" data-box-title="오늘 필요한 결정">
+<p>Terraform이 아니라 <strong>Bicep 기반 ALZ v4</strong>를 제안합니다. 플랫폼 조직이 데이터 자산을 이미 Bicep으로 운영하고 있기 때문입니다. 툴체인 하나, 리뷰 하나.</p>
+</div>
+</section>
+<section class="slide level2">
+<h2>전환 웨이브</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 15%">
+<col style="width: 17%">
+<col style="width: 33%">
+<col style="width: 17%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>웨이브</th>
+<th>시기</th>
+<th>범위</th>
+<th>처리 방침</th>
+<th>책임</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>2026 1분기</td>
+<td>랜딩 존, 연결, 아이덴티티</td>
+<td>—</td>
+<td>플랫폼</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>2026 2분기</td>
+<td>저위험 내부 앱 18개</td>
+<td>Rehost</td>
+<td>App Ops</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>2026 3분기</td>
+<td>현업 앱 34개</td>
+<td>Rehost / Replatform</td>
+<td>App Ops</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>2026 4분기</td>
+<td><span class="hl-risk">규제 대상 앱 9개</span></td>
+<td>Replatform / Refactor</td>
+<td>리스크 + App Ops</td>
+</tr>
+</tbody>
+</table>
+<div class="box">
+<p>웨이브 3은 금융감독원 변경 신고 기간이 <strong>2026년 9월 14일</strong>에 닫히기 전에는 시작할 수 없습니다. 계획 전체에서 움직이지 않는 유일한 제약입니다.</p>
+</div>
+</section>
+<section class="slide level2 smaller-text">
+<h2>6R 처리 방침</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h3>하는 것</h3>
+<ul>
+<li><strong>Rehost</strong> — 44개, IaaS로 그대로 이전</li>
+<li><strong>Replatform</strong> — 11개, 대부분 SQL → Azure SQL MI</li>
+<li><strong>Refactor</strong> — 2개, 고객 포털과 가격 산정 엔진</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<h3>하지 않는 것</h3>
+<ul>
+<li><strong>Repurchase</strong> — 3개, SaaS로 전환. 현업 소유이고 우리 몫이 아닙니다</li>
+<li><strong>Retire</strong> — <span class="hl-ok">1개</span>, 1월에 폐기</li>
+<li><strong>Retain</strong> — 0개. <span class="pop">IDC에 남는 것은 없습니다.</span></li>
+</ul>
+</div></div>
+</section>
+<section class="slide level2 smaller-text">
+<h2>버전 이전 매트릭스</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>구성 요소</th>
+<th>현재</th>
+<th>목표</th>
+<th>지원 종료</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Windows Server</td>
+<td>2012 R2</td>
+<td>2022</td>
+<td><span class="hl-risk">2023-10 경과</span></td>
+<td>재설치, 이관 불가</td>
+</tr>
+<tr class="even">
+<td>SQL Server</td>
+<td>2014</td>
+<td>Azure SQL MI</td>
+<td><span class="hl-risk">2024-07 경과</span></td>
+<td>호환성 수준 150</td>
+</tr>
+<tr class="odd">
+<td>.NET Framework</td>
+<td>4.6.2</td>
+<td>.NET 8</td>
+<td>2027-01</td>
+<td>재작성 2건</td>
+</tr>
+<tr class="even">
+<td>Java</td>
+<td>8</td>
+<td>17 LTS</td>
+<td>2030-12</td>
+<td>Spring Boot 2 → 3</td>
+</tr>
+<tr class="odd">
+<td>Python</td>
+<td>2.7</td>
+<td>3.12</td>
+<td><span class="hl-risk">2020-01 경과</span></td>
+<td>스크립트 12개</td>
+</tr>
+<tr class="even">
+<td>Node.js</td>
+<td>16</td>
+<td>22 LTS</td>
+<td><span class="hl-risk">2023-09 경과</span></td>
+<td>빌드만 영향</td>
+</tr>
+<tr class="odd">
+<td>Oracle</td>
+<td>12c</td>
+<td>PostgreSQL 16</td>
+<td><span class="hl-risk">2022-03 경과</span></td>
+<td><span class="hl-warn">스키마 변환 필요</span></td>
+</tr>
+</tbody>
+</table>
+<p><span class="smallest-text"><strong>지원 종료</strong>는 제조사가 보안 패치 제공을 멈추는 시점입니다. 이 날짜가 지난 구성 요소는 취약점이 발견돼도 고쳐지지 않으므로, 전환 일정과 무관하게 그 자체로 위험입니다.</span></p>
+<div class="box" data-box-title="읽는 법">
+<p>빨갛게 표시된 <strong>다섯 줄은 이미 지원이 끝났습니다.</strong> 웨이브 순서는 여기서 정해집니다. 대부분은 전환하면서 같이 올리면 되지만, <strong>Oracle → PostgreSQL만 유일하게 재작성</strong>입니다.</p>
+</div>
+</section>
+<section class="slide level2">
+<h2>코드로 만드는 랜딩 존</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-code-line-numbers="|1-3|5-8|10-12"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="" aria-label="1"></a><span class="ex">az</span> deployment mg create <span class="dt">\</span></span>
+<span id="cb1-2"><a href="" aria-label="2"></a>  <span class="at">--management-group-id</span> cloud9 <span class="dt">\</span></span>
+<span id="cb1-3"><a href="" aria-label="3"></a>  <span class="at">--location</span> koreacentral <span class="dt">\</span></span>
+<span id="cb1-4"><a href="" aria-label="4"></a>  <span class="at">--template-file</span> infra/alz/main.bicep <span class="dt">\</span></span>
+<span id="cb1-5"><a href="" aria-label="5"></a>  <span class="at">--parameters</span> <span class="dt">\</span></span>
+<span id="cb1-6"><a href="" aria-label="6"></a>    environment=prod <span class="dt">\</span></span>
+<span id="cb1-7"><a href="" aria-label="7"></a>    connectivityRegion=koreacentral <span class="dt">\</span></span>
+<span id="cb1-8"><a href="" aria-label="8"></a>    logRetentionDays=365 <span class="dt">\</span></span>
+<span id="cb1-9"><a href="" aria-label="9"></a>  <span class="at">--what-if</span></span>
+<span id="cb1-10"><a href="" aria-label="10"></a></span>
+<span id="cb1-11"><a href="" aria-label="11"></a><span class="ex">az</span> deployment mg what-if <span class="dt">\</span></span>
+<span id="cb1-12"><a href="" aria-label="12"></a>  <span class="at">--management-group-id</span> cloud9 <span class="dt">\</span></span>
+<span id="cb1-13"><a href="" aria-label="13"></a>  <span class="at">--template-file</span> infra/alz/main.bicep</span></code></pre></div><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></div>
+<aside class="notes">
+<p>오른쪽 화살표로 넘기십시오 — 스코프, 그다음 파라미터, 그다음 what-if. PDF에서는 흐림 없이 한 번, 평범한 소스로 인쇄됩니다.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section class="slide level2 smaller-text">
+<h2>전환 런북</h2>
+<div class="cp-boxlines" data-box-lines="7-9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="" aria-label="1"></a><span class="co"># T-60  원본 앱의 변경을 동결한다</span></span>
+<span id="cb2-2"><a href="" aria-label="2"></a><span class="ex">ansible-playbook</span> freeze.yml <span class="at">-l</span> app-prod</span>
+<span id="cb2-3"><a href="" aria-label="3"></a></span>
+<span id="cb2-4"><a href="" aria-label="4"></a><span class="co"># T-45  마지막 복제를 한 번 더 돌린다</span></span>
+<span id="cb2-5"><a href="" aria-label="5"></a><span class="ex">azcopy</span> sync /mnt/app-data https://cloud9mig.blob.core.windows.net/app-data</span>
+<span id="cb2-6"><a href="" aria-label="6"></a></span>
+<span id="cb2-7"><a href="" aria-label="7"></a><span class="co"># T-30  DNS TTL을 60초로  &lt;-- 되돌릴 수 없는 지점</span></span>
+<span id="cb2-8"><a href="" aria-label="8"></a><span class="ex">az</span> network dns record-set a update <span class="dt">\</span></span>
+<span id="cb2-9"><a href="" aria-label="9"></a>  <span class="at">-g</span> dns-prod <span class="at">-z</span> cloud9.co.kr <span class="at">-n</span> app <span class="at">--set</span> ttl=60</span>
+<span id="cb2-10"><a href="" aria-label="10"></a></span>
+<span id="cb2-11"><a href="" aria-label="11"></a><span class="co"># T-0   레코드를 전환하고 15분간 대시보드를 지켜본다</span></span>
+<span id="cb2-12"><a href="" aria-label="12"></a><span class="ex">az</span> network dns record-set a add-record <span class="dt">\</span></span>
+<span id="cb2-13"><a href="" aria-label="13"></a>  <span class="at">-g</span> dns-prod <span class="at">-z</span> cloud9.co.kr <span class="at">-n</span> app <span class="at">-a</span> 10.42.8.15</span></code></pre></div><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>T-30 위쪽은 전부 현업 결정 없이 되돌릴 수 있습니다.</p>
+</section>
+<section class="slide level2">
+<h2>Go / No-Go 게이트</h2>
+<div class="steps cp-steps">
+<ul>
+<li class="fragment">목표 환경에서 P1 스모크 테스트 전부 통과</li>
+<li class="fragment">복제 지연 30초 미만이 한 시간 연속 유지</li>
+<li class="fragment">최근 14일 이내에 롤백 리허설 완료</li>
+<li class="fragment">지정된 현업 책임자가 상황 통화에 참여</li>
+</ul>
+</div>
+<div class="box" data-box-title="누가 결정하는가">
+<p><strong>애플리케이션 책임자</strong>가 Go / No-Go를 결정합니다. 플랫폼도, 프로그램 조직도 아닙니다. 우리는 근거를 제공하고, 리스크는 그들이 집니다.</p>
+</div>
+</section>
+<section class="slide level2">
+<h2>리스크</h2>
+<div title="발견되지 않은 의존성">
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>발견되지 않은 의존성</strong></p>
+</div>
+<div class="callout-content">
+<p>디스커버리로 61개 앱을 매핑했지만, 외부 통신 의존성이 확인된 것은 38개뿐입니다. 완화책: 각 웨이브를 동결하기 전에 2주간 트래픽 캡처 기간을 둡니다.</p>
+</div>
+</div>
+</div>
+</div>
+<div title="라이선스 이전 가능성">
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>라이선스 이전 가능성</strong></p>
+</div>
+<div class="callout-content">
+<p>ISV 계약 3건은 클라우드 조항이 생기기 전에 체결된 것입니다. 법무 검토가 <span class="hl-warn">2월 28일 예정</span>이고, 웨이브 2의 임계 경로 위에 있습니다.</p>
+</div>
+</div>
+</div>
+</div>
+<div title="앞서 있는 부분">
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>앞서 있는 부분</strong></p>
+</div>
+<div class="callout-content">
+<p>아이덴티티는 끝났습니다. Entra ID Connect가 11월부터 목표 테넌트에서 돌고 있어서, 인증 때문에 막히는 웨이브는 없습니다.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="slide level2 smaller-text">
+<h2>책임 분장</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>활동</th>
+<th style="text-align: center;">플랫폼</th>
+<th style="text-align: center;">App Ops</th>
+<th style="text-align: center;">앱 책임자</th>
+<th style="text-align: center;">리스크</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>랜딩 존 구축</td>
+<td style="text-align: center;"><strong>A/R</strong></td>
+<td style="text-align: center;">C</td>
+<td style="text-align: center;">I</td>
+<td style="text-align: center;">C</td>
+</tr>
+<tr class="even">
+<td>웨이브 일정 수립</td>
+<td style="text-align: center;">C</td>
+<td style="text-align: center;"><strong>A/R</strong></td>
+<td style="text-align: center;">C</td>
+<td style="text-align: center;">I</td>
+</tr>
+<tr class="odd">
+<td>애플리케이션 테스트</td>
+<td style="text-align: center;">I</td>
+<td style="text-align: center;">C</td>
+<td style="text-align: center;"><strong>A/R</strong></td>
+<td style="text-align: center;">I</td>
+</tr>
+<tr class="even">
+<td>Go / No-Go</td>
+<td style="text-align: center;">C</td>
+<td style="text-align: center;">C</td>
+<td style="text-align: center;"><strong>A</strong></td>
+<td style="text-align: center;"><strong>R</strong></td>
+</tr>
+<tr class="odd">
+<td>전환 후 지원</td>
+<td style="text-align: center;">C</td>
+<td style="text-align: center;"><strong>A/R</strong></td>
+<td style="text-align: center;">C</td>
+<td style="text-align: center;">I</td>
+</tr>
+</tbody>
+</table>
+<p><span class="tag info">A</span> 최종책임 · <span class="tag info">R</span> 실무책임 · <span class="tag">C</span> 협의 · <span class="tag">I</span> 통보</p>
+</section>
+<section class="slide level2">
+<h2>요청 사항</h2>
+<div class="steps cp-steps">
+<ul>
+<li class="fragment">랜딩 존에 <strong>Terraform이 아닌 Bicep</strong>을 쓰는 데 대한 승인</li>
+<li class="fragment">3월부터 12월까지 App Ops 엔지니어 2명 추가</li>
+<li class="fragment"><strong>금융감독원 신고 기간이 9월 14일에 닫힌다</strong>는 확인</li>
+<li class="fragment"><strong>1월 31일</strong>까지 61개 앱 각각의 애플리케이션 책임자 지정</li>
+</ul>
+</div>
+<div class="focus">
+<p>네 번째가 없으면 웨이브 1이 밀리고, 뒤따르는 웨이브가 전부 함께 밀립니다.</p>
+</div>
+</section>
+<section>
+<section class="title-slide slide level1 section-slide center" data-background-color="#0b2545">
+<h1>부록</h1>
+
+</section>
+<section class="slide level2 smaller-text">
+<h2>강조 문법 요약</h2>
+<p>PDF는 슬라이드의 <strong>최종 상태</strong>를 보여줍니다. 아래 표시는 그대로 인쇄되고, 순차 등장·흐림 같은 발표용 동작만 평탄화됩니다. 특정 표시를 인쇄에서 빼려면 <code>.pointer</code>를 덧붙이십시오.</p>
+<div class="columns">
+<div class="column" style="width:52%;">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>이렇게 쓰면</th>
+<th>이렇게 됩니다</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>[x]{.hl}</code></td>
+<td><span class="hl">x</span> 형광펜</td>
+</tr>
+<tr class="even">
+<td><code>[x]{.hl-ok}</code></td>
+<td><span class="hl-ok">x</span> 좋은 소식</td>
+</tr>
+<tr class="odd">
+<td><code>[x]{.hl-risk}</code></td>
+<td><span class="hl-risk">x</span> 리스크</td>
+</tr>
+<tr class="even">
+<td><code>[x]{.box}</code></td>
+<td><span class="box">x</span> 빨간 상자</td>
+</tr>
+<tr class="odd">
+<td><code>[x]{.circle}</code></td>
+<td><span class="circle">x</span> 동그라미</td>
+</tr>
+<tr class="even">
+<td><code>[x]{.uline}</code></td>
+<td><span class="uline">x</span> 밑줄</td>
+</tr>
+<tr class="odd">
+<td><code>[x]{.pop}</code></td>
+<td><span class="pop">x</span> 크게</td>
+</tr>
+<tr class="even">
+<td><code>[x]{.pulse}</code></td>
+<td><span class="pulse">x</span> 굵은 테두리</td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:48%;">
+<table class="caption-top">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>이렇게 쓰면</th>
+<th>이렇게 됩니다</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>::: {.box}</code></td>
+<td>블록을 빨간 상자로</td>
+</tr>
+<tr class="even">
+<td><code>::: {.box title="X"}</code></td>
+<td>…라벨까지 붙여서</td>
+</tr>
+<tr class="odd">
+<td><code>::: {.focus}</code></td>
+<td>나머지가 흐려짐</td>
+</tr>
+<tr class="even">
+<td><code>::: {.dim}</code></td>
+<td>이 블록만 뒤로</td>
+</tr>
+<tr class="odd">
+<td><code>::: {.steps}</code></td>
+<td>하나씩, 앞 것도 계속 읽힘</td>
+</tr>
+<tr class="even">
+<td><span class="mono">```{.bash code-line-numbers="1|3"}</span></td>
+<td>코드를 한 단계씩</td>
+</tr>
+<tr class="odd">
+<td><span class="mono">```{.bash box-lines="7-9"}</span></td>
+<td>소스 줄에 빨간 상자</td>
+</tr>
+<tr class="even">
+<td><code>.pointer</code></td>
+<td>이 표시만 PDF에서 제외</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+</section>
+<section class="slide level2 smaller-text">
+<h2>글꼴</h2>
+<p>기본값은 구글이 제공하는 <strong>Noto Sans KR</strong>(본문)과 <strong>Noto Sans Mono</strong>(코드)이고, <code>_extensions/cloudpres/fonts.html</code>에서 불러옵니다.</p>
+<p>가진 글꼴 파일을 쓰려면 두 단계입니다. <code>.woff2</code>를 <code>assets/fonts/</code>에 넣고 <code>fonts.html</code>의 <code>@font-face</code> 주석을 푼 다음, <code>theme.scss</code>의 <code>$cp-font-sans</code> 첫 이름을 바꾸면 됩니다.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource scss number-lines code-with-copy"><code class="sourceCode scss"><span id="cb3-1"><a href="" aria-label="1"></a><span class="co">// theme.scss</span></span>
+<span id="cb3-2"><a href="" aria-label="2"></a><span class="va">$cp-font-sans</span>: <span class="st">"Pretendard"</span><span class="op">,</span> <span class="st">"Noto Sans KR"</span><span class="op">,</span> <span class="st">"Malgun Gothic"</span><span class="op">,</span> <span class="dv">sans-serif</span> <span class="at">!default</span><span class="op">;</span></span></code></pre></div><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="box blue" data-box-title="폐쇄망이라면">
+<p><code>fonts.html</code>의 <code>&lt;link&gt;</code> 세 줄을 지우고 <code>.woff2</code> 파일만 쓰십시오. 웹폰트를 못 받아도 <code>Malgun Gothic</code>으로 떨어지므로 한글이 깨지지는 않습니다.</p>
+</div>
+</section>
+<section class="slide level2 smaller-text">
+<h2>화면 비율과 여백</h2>
+<p>슬라이드 크기와 여백은 <code>_extensions/cloudpres/_extension.yml</code>에 있습니다. 덱 하나만 다르게 하려면 그 덱의 머리말에 같은 키를 써도 됩니다.</p>
+<div class="columns">
+<div class="column" style="width:46%;">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource yaml number-lines code-with-copy"><code class="sourceCode yaml"><span id="cb4-1"><a href="" aria-label="1"></a><span class="fu">width</span><span class="kw">:</span><span class="at"> </span><span class="dv">1280</span><span class="co">      # 16:9 (기본)</span></span>
+<span id="cb4-2"><a href="" aria-label="2"></a><span class="fu">height</span><span class="kw">:</span><span class="at"> </span><span class="dv">720</span></span>
+<span id="cb4-3"><a href="" aria-label="3"></a><span class="fu">margin</span><span class="kw">:</span><span class="at"> </span><span class="fl">0.06</span><span class="co">     # 0~1, 내용 둘레 여백</span></span></code></pre></div><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></div>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>비율</th>
+<th>width / height</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>16:9</td>
+<td>1280 / 720</td>
+</tr>
+<tr class="even">
+<td>16:10</td>
+<td>1280 / 800</td>
+</tr>
+<tr class="odd">
+<td>4:3</td>
+<td>1024 / 768</td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:54%;">
+<p><strong>PDF는 화면 비율을 그대로 따라갑니다.</strong> 따로 설정할 것이 없습니다. 페이지 크기가 이렇게 정해집니다.</p>
+<div class="box blue">
+<p><code>width × (1 + margin)</code> × <code>height × (1 + margin)</code></p>
+</div>
+<p>그래서 <code>margin</code>을 키우면 화면과 PDF 양쪽에서 여백이 같이 늘어납니다.</p>
+</div></div>
+<div class="box" data-box-title="인쇄에만 여백을 더 주고 싶다면">
+<p><code>margin</code>은 화면과 PDF에 함께 적용됩니다. PDF 에만 더 주려면 <code>print-clean.scss</code> 맨 위의 <code>$cp-print-inset</code>을 0에서 올리십시오. 하단 바는 페이지 가장자리에 그대로 남고 내용만 안쪽으로 들어갑니다.</p>
+</div>
+</section>
+<section class="slide level2 smaller-text">
+<h2>다단 레이아웃</h2>
+<p>바깥을 콜론 <strong>네 개</strong> <code>::::</code>, 각 단을 콜론 <strong>세 개</strong> <code>:::</code>로 감쌉니다.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb5-1"><a href="" aria-label="1"></a>:::: {.columns}</span>
+<span id="cb5-2"><a href="" aria-label="2"></a>::: {.column width="50%"}</span>
+<span id="cb5-3"><a href="" aria-label="3"></a>왼쪽 내용</span>
+<span id="cb5-4"><a href="" aria-label="4"></a>:::</span>
+<span id="cb5-5"><a href="" aria-label="5"></a>::: {.column width="50%"}</span>
+<span id="cb5-6"><a href="" aria-label="6"></a>오른쪽 내용</span>
+<span id="cb5-7"><a href="" aria-label="7"></a>:::</span>
+<span id="cb5-8"><a href="" aria-label="8"></a>::::</span></code></pre></div><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></div>
+<p>아래는 세 단으로 실제 렌더한 모습입니다.</p>
+<div class="columns">
+<div class="column" style="width:32%;">
+<p><span class="tag info">하나</span> 기획</p>
+</div><div class="column" style="width:32%;">
+<p><span class="tag info">둘</span> 구현</p>
+</div><div class="column" style="width:32%;">
+<p><span class="tag info">셋</span> 검증</p>
+</div></div>
+<div class="box amber" data-box-title="너비 합을 넘기지 마십시오">
+<p>Quarto가 각 단을 <code>inline-block</code>으로 배치하기 때문에, 합이 100%를 넘는 순간 마지막 단이 아래로 밀려 내려갑니다. 단 사이 여백도 직접 주지 마십시오. 세 단이면 <strong>32% 씩</strong>이 안전합니다. 단 안에 또 단을 넣는 중첩도 피하십시오.</p>
+</div>
+</section>
+<section class="slide level2 smaller-text">
+<h2>이미지</h2>
+<div class="columns">
+<div class="column" style="width:52%;">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="" aria-label="1"></a><span class="al">![캡션은 이렇게](assets/그림.png)</span></span>
+<span id="cb6-2"><a href="" aria-label="2"></a></span>
+<span id="cb6-3"><a href="" aria-label="3"></a><span class="al">![](assets/그림.png)</span>{width=60%}</span></code></pre></div><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></div>
+<p>이미지는 <code>assets/</code>에 넣고 그 경로로 부릅니다. <code>_quarto.yml</code>의 <code>resources: assets/**</code>가 <code>_output/</code>으로 복사해 줍니다.</p>
+<p>슬라이드에 이미지가 하나뿐이면 Quarto가 높이에 맞춰 자동으로 늘립니다. 원본 크기로 두려면 <code>{.nostretch}</code>를 붙이십시오.</p>
+<p>슬라이드 전체를 채우려면:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb7-1"><a href="" aria-label="1"></a><span class="fu">## 제목 {background-image="assets/그림.jpg"}</span></span></code></pre></div><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></div>
+</div><div class="column" style="width:48%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="assets/logo.svg" style="width:70.0%"></p>
+<figcaption>Cloud 9 로고 — 자리 표시용입니다</figcaption>
+</figure>
+</div>
+</div></div>
+</section>
+<section class="slide level2 smaller-text">
+<h2>영상 임베드</h2>
+<div class="columns">
+<div class="column" style="width:46%;">
+<p><code>video</code> shortcode 하나면 됩니다. YouTube, Vimeo, 로컬 파일 모두 같은 문법입니다.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb8-1"><a href="" aria-label="1"></a>::: {.screen-only}</span>
+<span id="cb8-2"><a href="" aria-label="2"></a>{{&lt; video</span>
+<span id="cb8-3"><a href="" aria-label="3"></a>  https://www.youtube.com/embed/ID &gt;}}</span>
+<span id="cb8-4"><a href="" aria-label="4"></a>:::</span>
+<span id="cb8-5"><a href="" aria-label="5"></a></span>
+<span id="cb8-6"><a href="" aria-label="6"></a>::: {.print-only}</span>
+<span id="cb8-7"><a href="" aria-label="7"></a><span class="al">![시연 화면](assets/시연.png)</span></span>
+<span id="cb8-8"><a href="" aria-label="8"></a>:::</span></code></pre></div><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></div>
+<p>화면에서는 영상이, PDF에서는 그림이 나옵니다. 그림은 직접 준비하십시오.</p>
+<div class="box" data-box-title="YouTube 오류 153이 뜬다면">
+<p>파일을 더블클릭해서 <code>file://</code>로 연 경우입니다. YouTube는 임베드에 출처(referrer)를 요구하는데 <code>file://</code>에는 그게 없습니다. <code>.\render.cmd -Preview</code>로 열거나 배포된 주소로 보면 정상입니다.</p>
+</div>
+</div><div class="column" style="width:54%;">
+<div class="screen-only">
+<iframe data-external="1" src="https://www.youtube.com/embed/M7lc1UVf-VE" width="100%" height="300" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+</div>
+<div class="print-only">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="assets/logo.svg" style="width:60.0%"></p>
+<figcaption>여기에 시연 화면 캡처가 들어갑니다</figcaption>
+</figure>
+</div>
+</div>
+<p><span class="muted smallest-text">화면용 샘플은 Google for Developers 채널의 공식 영상입니다.</span></p>
+</div></div>
+</section>
+<section class="slide level2 smaller-text">
+<h2>발표와 내보내기</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h3>발표 중</h3>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>키</th>
+<th>동작</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>Home</code> / <code>End</code></td>
+<td>첫 장 / 마지막 장</td>
+</tr>
+<tr class="even">
+<td><code>S</code></td>
+<td>발표자 화면 (노트)</td>
+</tr>
+<tr class="odd">
+<td><code>F</code></td>
+<td>전체 화면</td>
+</tr>
+<tr class="even">
+<td><code>O</code> / <code>Esc</code></td>
+<td>슬라이드 개요</td>
+</tr>
+<tr class="odd">
+<td><code>B</code></td>
+<td>화면 끄기</td>
+</tr>
+<tr class="even">
+<td><code>C</code></td>
+<td>칠판 — 슬라이드에 직접 그리기</td>
+</tr>
+<tr class="odd">
+<td><code>Shift</code>+<code>E</code></td>
+<td>모든 강조 표시 제거</td>
+</tr>
+<tr class="even">
+<td><code>?</code></td>
+<td>단축키 전체</td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:50%;">
+<h3>내보내기</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource powershell number-lines code-with-copy"><code class="sourceCode powershell"><span id="cb9-1"><a href="" aria-label="1"></a><span class="co"># _output/ 에 HTML과 깔끔한 PDF</span></span>
+<span id="cb9-2"><a href="" aria-label="2"></a><span class="op">.</span>\render<span class="op">.</span><span class="fu">cmd</span> <span class="op">-</span>Pdf</span></code></pre></div><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></div>
+<p>직접 하려면: 렌더된 덱을 열고 URL 뒤에 <code>?print-pdf</code>를 붙인 다음, <strong>배경 그래픽</strong>을 켜고 여백을 <strong>없음</strong>으로 해서 PDF로 인쇄하십시오.</p>
+<div class="box green" data-box-title="PDF는 이렇게 나옵니다">
+<p>슬라이드당 한 쪽, 최종 상태, 형광펜도 흐림도 빨간 상자도 없이 — 그리고 모든 쪽에 권리 표시와 쪽 번호.</p>
+</div>
+</div></div>
+
+</section></section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+<p>© 2026 Cloud 9<span class="cp-footer-center">애플리케이션 클라우드 전환 계획</span></p>
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="libs/revealjs/plugin/search/search.js"></script>
+  <script src="libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': false,
+'previewLinksAuto': true,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'pdfMaxPagesPerSlide': 1,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true,"width":"normal","numbers":true},
+'chalkboard': {"buttons":true,"boundary":0.95},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: true,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1280,
+
+        height: 720,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 6.0e-2,
+
+        // Bounds for smallest/largest possible scale to apply to content
+        minScale: 0.2,
+
+        maxScale: 2,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <style>
+      /* Toast for the Shift+E emphasis toggle. Screen-only by definition. */
+      #cp-emphasis-toast {
+        position: fixed;
+        left: 50%;
+        bottom: 56px;
+        transform: translateX(-50%);
+        z-index: 60;
+        padding: 6px 14px;
+        border-radius: 999px;
+        background: rgba(11, 37, 69, 0.9);
+        color: #fff;
+        font: 600 13px/1.2 system-ui, sans-serif;
+        letter-spacing: 0.02em;
+        pointer-events: none;
+        /* No fade - see emphasis.scss section 0. The toast is on screen during
+           the call too, so it cuts in and out like everything else. */
+        opacity: 0;
+      }
+      #cp-emphasis-toast.cp-visible { opacity: 1; }
+    </style>
+
+    <script>
+      /* -------------------------------------------------------------------------
+         cloudpres runtime
+
+         1. Mermaid label size, set before the first diagram is laid out
+         2. Red boxes around individual source lines  (`box-lines="4-6,9"`)
+         3. Footer + "c / t" page number on EVERY exported PDF page
+            (Quarto's footer is position:fixed, so it otherwise prints once;
+             reveal's own PDF number is a bare counter with no total)
+         4. Hide the footer chrome on the title slide
+         5. Shift+E - strip every emphasis mark live, for "show me the clean slide"
+         ---------------------------------------------------------------------- */
+      (function () {
+        "use strict";
+
+        var FOOTER_SOURCE = ".footer-default";
+
+        function isPrintView() {
+          return /print-pdf|view=print/i.test(window.location.search);
+        }
+
+        /* --- 0. mermaid label size and family --------------------------------
+           Mermaid lays a diagram out by MEASURING each label, and both the node
+           box and the <foreignObject> the label goes into are sized from that
+           measurement. The measuring happens where our stylesheet cannot reach,
+           so changing the label with CSS afterwards changes the text without
+           changing the box it was measured into.
+
+           The size and the family therefore have to reach mermaid as config,
+           before it draws. Quarto calls `mermaid.initialize()` while the <head>
+           is parsed and renders on `load`, so this file - reached at the end of
+           <body> - lands in between.
+
+           The family matters as much as the size: mermaid's built-in stack is
+           Trebuchet, which has no Hangul, so a Korean label measured under it
+           falls back to whatever the machine happens to have rather than to the
+           face that will be drawn.
+
+           This makes the box the right size. It does not make the box the right
+           size on every machine - a web font that arrives late is measured as
+           its fallback, and that is out of our hands here. theme.scss takes the
+           other half: it centres the label in whatever box it was given, so a
+           mismatch can only cost a little symmetric padding, never a label
+           shoved against one wall. */
+
+        function configureMermaid() {
+          if (typeof window.mermaid === "undefined") return;
+          if (typeof mermaid.initialize !== "function") return;
+
+          var host = document.querySelector(".reveal") || document.documentElement;
+          var size, family, previous;
+
+          try {
+            var css = window.getComputedStyle(host);
+            size = css.getPropertyValue("--cp-mermaid-font-size").trim();
+            /* Quarto publishes the deck's family as `--mermaid-font-family`. */
+            family = css.getPropertyValue("--mermaid-font-family").trim() || css.fontFamily;
+          } catch (e) {
+            return;
+          }
+          if (!size) return;
+
+          try {
+            previous = (mermaid.mermaidAPI && mermaid.mermaidAPI.getConfig
+              ? mermaid.mermaidAPI.getConfig()
+              : {}) || {};
+          } catch (e) {
+            previous = {};
+          }
+
+          var options = {
+            startOnLoad: false,
+            fontFamily: family,
+            themeVariables: { fontSize: size, fontFamily: family }
+          };
+          /* Quarto sets exactly one of these; pass back whichever it used. */
+          if (previous.theme) options.theme = previous.theme;
+          if (previous.themeCSS) options.themeCSS = previous.themeCSS;
+
+          try {
+            mermaid.initialize(options);
+          } catch (e) { /* a mermaid we do not know - leave its defaults */ }
+        }
+
+        /* --- 1. box-lines ----------------------------------------------------- */
+
+        function parseRanges(spec) {
+          var out = [];
+          String(spec).split(",").forEach(function (part) {
+            var m = part.trim().match(/^(\d+)(?:\s*-\s*(\d+))?$/);
+            if (!m) return;
+            var a = parseInt(m[1], 10);
+            var b = m[2] ? parseInt(m[2], 10) : a;
+            out.push([Math.min(a, b), Math.max(a, b)]);
+          });
+          return out;
+        }
+
+        /* The box is an overlay measured from the line <span>s, never a border on
+           them: pandoc's line numbering needs those spans to stay inline. */
+        function drawLineBoxes() {
+          document.querySelectorAll(".cp-boxlines[data-box-lines]").forEach(function (wrap) {
+            var ranges = parseRanges(wrap.getAttribute("data-box-lines"));
+            var frame = wrap.querySelector("div.sourceCode");
+            if (!frame || !ranges.length) return;
+
+            frame.querySelectorAll(":scope > .cp-line-box").forEach(function (el) {
+              el.parentNode.removeChild(el);
+            });
+
+            var code = frame.querySelector("pre code");
+            if (!code) return;
+            var lines = code.querySelectorAll(":scope > span");
+            if (!lines.length) return;
+
+            ranges.forEach(function (range) {
+              var first = lines[range[0] - 1];
+              var last = lines[Math.min(range[1], lines.length) - 1];
+              if (!first || !last) return;
+
+              var top = first.offsetTop;
+              var bottom = last.offsetTop + last.offsetHeight;
+              if (bottom <= top) return;
+
+              var box = document.createElement("div");
+              box.className = "cp-line-box";
+              box.style.top = top - 2 + "px";
+              box.style.height = bottom - top + 4 + "px";
+              frame.appendChild(box);
+            });
+          });
+        }
+
+        /* Re-measure after fonts settle and whenever the deck is re-laid out. */
+        function scheduleLineBoxes() {
+          window.requestAnimationFrame(drawLineBoxes);
+        }
+
+        /* --- 2. per-page footer in the PDF export ----------------------------- */
+
+        function pageIsDark(page, section) {
+          if (section && section.classList.contains("section-slide")) return true;
+          if (section && section.classList.contains("has-dark-background")) return true;
+          return !!page.querySelector(".slide-background.has-dark-background");
+        }
+
+        function buildPdfFooters() {
+          var slides = document.querySelector(".reveal .slides");
+          if (!slides) return;
+
+          var pages = slides.querySelectorAll(".pdf-page");
+          if (!pages.length) return;
+
+          var defaultFooter = document.querySelector(FOOTER_SOURCE);
+          var total = pages.length;
+
+          pages.forEach(function (page, index) {
+            if (page.querySelector(":scope > .cp-pdf-footer")) return; // idempotent
+
+            var section = page.querySelector("section");
+            var isTitle = !!(section && isTitleSection(section));
+            var suppressed = !!(section && section.getAttribute("data-footer") === "false");
+
+            if (isTitle) {
+              page.classList.add("cp-title-page");
+            }
+            if (suppressed) {
+              page.classList.add("cp-no-footer");
+            }
+            if (pageIsDark(page, section)) {
+              page.classList.add("cp-dark-page");
+            }
+
+            /* rights text: a per-slide `.footer` wins over the deck default */
+            var perSlide = section ? section.querySelector(".footer") : null;
+            var source = perSlide || defaultFooter;
+            if (source) {
+              var clone = source.cloneNode(true);
+              clone.classList.remove("footer-default");
+              clone.classList.add("footer", "cp-pdf-footer");
+              clone.style.removeProperty("display");
+              page.appendChild(clone);
+            }
+
+            /* page number: reveal writes a bare counter, we want "c / t" */
+            var number = page.querySelector(":scope > .slide-number-pdf");
+            if (!number) {
+              number = document.createElement("div");
+              number.className = "slide-number slide-number-pdf";
+              page.appendChild(number);
+            }
+            number.innerHTML =
+              '<span class="slide-number-a">' + (index + 1) + "</span>" +
+              '<span class="slide-number-delimiter">&nbsp;/&nbsp;</span>' +
+              '<span class="slide-number-b">' + total + "</span>";
+          });
+        }
+
+        /* --- 3. title-slide chrome ------------------------------------------- */
+
+        function isTitleSection(section) {
+          return (
+            section.id === "title-slide" ||
+            section.classList.contains("quarto-title-block")
+          );
+        }
+
+        function markTitleSlide(slide) {
+          document.body.classList.toggle("cp-title-slide", !!slide && isTitleSection(slide));
+        }
+
+        /* --- 4. Shift+E: strip emphasis live ---------------------------------- */
+
+        var toastTimer = null;
+
+        function toast(message) {
+          var el = document.getElementById("cp-emphasis-toast");
+          if (!el) {
+            el = document.createElement("div");
+            el.id = "cp-emphasis-toast";
+            document.body.appendChild(el);
+          }
+          el.textContent = message;
+          el.classList.add("cp-visible");
+          window.clearTimeout(toastTimer);
+          toastTimer = window.setTimeout(function () {
+            el.classList.remove("cp-visible");
+          }, 1100);
+        }
+
+        function bindEmphasisToggle() {
+          document.addEventListener("keydown", function (ev) {
+            if (!ev.shiftKey || ev.ctrlKey || ev.altKey || ev.metaKey) return;
+            if (ev.key !== "E" && ev.key !== "e") return;
+
+            var tag = (ev.target && ev.target.tagName) || "";
+            if (/INPUT|TEXTAREA|SELECT/.test(tag) || (ev.target && ev.target.isContentEditable)) return;
+
+            var off = document.body.classList.toggle("cp-no-emphasis");
+            toast(off ? "Emphasis off" : "Emphasis on");
+            ev.preventDefault();
+          });
+        }
+
+        /* 5. End -> the actual last slide.
+           reveal binds End to `slide(getHorizontalSlides().length - 1)` with no
+           vertical index, so on a deck whose last stack has sub-slides (an
+           appendix under an H1) it lands on that stack's FIRST slide. Rebind it
+           to the genuine last one. Home already does the right thing. */
+        function bindEndKey() {
+          Reveal.addKeyBinding(
+            { keyCode: 35, key: "End", description: "Last slide" },
+            function () {
+              var stacks = Reveal.getHorizontalSlides();
+              if (!stacks.length) return;
+              var last = stacks[stacks.length - 1];
+              var subs = last.querySelectorAll(":scope > section");
+              Reveal.slide(stacks.length - 1, subs.length ? subs.length - 1 : 0);
+            }
+          );
+        }
+
+        /* --- wire-up ---------------------------------------------------------- */
+
+        function init() {
+          /* Anything in here that throws would take the PDF footer, the source
+             line boxes and the key bindings down with it, so it is wrapped and
+             it runs on its own. */
+          try {
+            configureMermaid();
+          } catch (e) { /* diagrams keep mermaid's defaults; the rest still runs */ }
+
+          drawLineBoxes();
+
+          if (!isPrintView()) {
+            bindEmphasisToggle();
+          }
+
+          if (typeof Reveal === "undefined") return;
+
+          if (!isPrintView() && typeof Reveal.addKeyBinding === "function") {
+            bindEndKey();
+          }
+
+          Reveal.on("ready", function (ev) {
+            markTitleSlide(ev.currentSlide);
+            scheduleLineBoxes();
+          });
+
+          Reveal.on("slidechanged", function (ev) {
+            markTitleSlide(ev.currentSlide);
+            scheduleLineBoxes();
+          });
+
+          Reveal.on("resize", scheduleLineBoxes);
+
+          if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(scheduleLineBoxes);
+          }
+
+          /* reveal rebuilds the DOM into .pdf-page wrappers, then fires this */
+          Reveal.on("pdf-ready", function () {
+            buildPdfFooters();
+            drawLineBoxes();
+          });
+
+          /* belt-and-braces: if the event was missed, decorate anyway */
+          if (isPrintView()) {
+            window.setTimeout(buildPdfFooters, 1500);
+            window.addEventListener("beforeprint", buildPdfFooters);
+          }
+        }
+
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", init);
+        } else {
+          init();
+        }
+      })();
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "복사완료!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "복사완료!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+                // target, if specified
+                link.setAttribute("target", "_blank");
+                if (link.getAttribute("rel") === null) {
+                  link.setAttribute("rel", "noopener");
+                }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>
