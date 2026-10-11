@@ -9,8 +9,8 @@
 <link href="libs/quarto-html/quarto-syntax-highlighting-bb62276ab45c84d9efd712f51ff97b5a.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.10.18">
 
-  <meta name="author" content="발표자 이름">
-  <title>프로젝트 제목</title>
+  <meta name="author" content="Cloud 9 · 김태준(팀장) 김건형 김승환 양진현 우수빈">
+  <title>펫 클리닉 3계층 아키텍처 인프라 구축</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -251,37 +251,266 @@
     <div class="slides">
 
 <section class="quarto-title-block center">
-  <h1 class="title">프로젝트 제목</h1>
-  <p class="subtitle">부제를 여기에</p>
+  <h1 class="title">펫 클리닉 3계층 아키텍처 인프라 구축</h1>
+  <p class="subtitle">NAT 게이트웨이 없는 AWS 3계층 구성과 절차서 기반 구축</p>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
 <div class="quarto-title-author-name">
-발표자 이름
+Cloud 9 · 김태준(팀장) 김건형 김승환 양진현 우수빈
 </div>
         <p class="quarto-title-affiliation">
-            Cloud 9
+            AI 서비스 운영을 위한 클라우드 데이터 엔지니어 과정 중간 프로젝트
+          </p>
+        <p class="quarto-title-affiliation">
+            프로젝트 기간: 2026. 9. 21. ~ 2026. 10. 14. (13일)
           </p>
     </div>
 </div>
 
-  <p class="date">2026년 9월 20일</p>
+  <p class="date">2026. 10. 14. (수)</p>
 </section>
-<section class="slide level2">
+<section class="slide level2 smaller-text">
 <h2>목차</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: center;">순서</th>
+<th>내용</th>
+<th>발표</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td>서비스 시나리오, 아키텍처, 팀과 작업 방식, 비용 결정</td>
+<td>김승환</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2</td>
+<td>작업 기반: VPC, 서브넷, 보안 그룹, 엔드포인트</td>
+<td>김태준</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">3</td>
+<td>WAS: Tomcat 구성, 내부 ALB와 Auto Scaling</td>
+<td>김건형</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">4</td>
+<td>DB 서버: RDS MySQL과 RDS Proxy</td>
+<td>우수빈</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">5</td>
+<td>웹 서버와 CloudFront</td>
+<td>양진현</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">6</td>
+<td>부하 시험, 최종 결과물, 마무리</td>
+<td>김승환</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">7</td>
+<td>시연</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<aside class="notes">
+<p>10초. 넘기면서 “구축한 순서대로 담당자가 직접 발표한다”고만 말한다.</p>
+<p>발표 10분 + 시연 5분 기준 초안. 시간 배분: 김승환 3분 15초(시나리오, 아키텍처, 팀과 작업 방식, 일정, 비용) → 김태준 1분 30초 → 김건형 1분 30초 → 우수빈 1분 30초 → 양진현 1분 30초 → 김승환 45초(시험, 결과물, 마무리) → 시연 5분 각 슬라이드의 노트(S 키)에 말할 거리와 시간을 적어 두었다. “초안” 표시가 있는 곳은 본인 경험이나 실제 결과로 바꿔야 한다.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section class="slide level2 smaller-text">
+<h2>프로젝트 개요와 서비스 시나리오</h2>
+<p><span class="tag info">발표 김승환 · 50초</span></p>
+<div class="lead">
+<p>동물병원 300개 지점을 24시간 운영하는 펫 클리닉이, 병원 직원이 쓸 홈페이지(PetClinic)의 인프라를 AWS에 구축해 달라고 요청했다.</p>
+</div>
+<table class="caption-top">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>요구 사항</th>
+<th>설계에 반영한 것</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>서버 하나가 고장 나도 2분 안에 정상 서비스</td>
+<td>AZ 두 곳에 분산, ALB 상태 확인으로 고장 서버 제외, Auto Scaling이 교체</td>
+</tr>
+<tr class="even">
+<td>AZ에 문제가 있으면</td>
+<td>임시로 다른 AZ 하나만 사용 (영역 이동)</td>
+</tr>
+<tr class="odd">
+<td>앱 업데이트 중에도 서비스 중단 없음</td>
+<td>새 AMI로 인스턴스 새로 고침, 새 인스턴스를 먼저 띄운 뒤 교체</td>
+</tr>
+<tr class="even">
+<td>동시 사용자 600명</td>
+<td>인스턴스 사양 결정, k6 부하 시험으로 확인</td>
+</tr>
+<tr class="odd">
+<td>고객 정보 저장 시 암호화, 백업</td>
+<td>RDS 저장 암호화, DB 구간 TLS, 자동 백업 7일</td>
+</tr>
+<tr class="even">
+<td>병원 양식의 오류 페이지</td>
+<td>CloudFront 사용자 지정 오류 응답과 S3</td>
+</tr>
+<tr class="odd">
+<td>Apache, Tomcat, OpenJDK 기반</td>
+<td>Apache 2.4, Tomcat 9, Amazon Corretto 8 (OpenJDK 배포판)</td>
+</tr>
+<tr class="even">
+<td>사용자 규모 확대 (미확정)</td>
+<td>WAS 2~4대 자동 조정, AZ B와 D의 주소 대역 예약</td>
+</tr>
+</tbody>
+</table>
+<aside class="notes">
+<p>50초. 왼쪽 열(받은 요구)을 읽고, 오른쪽 열은 “뒤에서 담당자가 하나씩 설명한다”로 넘긴다. 2분 근거: WAS 대상은 상태 확인 2회 실패(약 40초)로 빠지고 남은 서버가 처리한다. DB 장애 조치는 보통 60~120초다. 질문이 나오면 이 두 숫자로 답한다. 앱을 만드는 프로젝트가 아니라 이미 있는 PetClinic을 운영할 인프라를 짓고 배우는 프로젝트라는 점도 한 문장 넣는다.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section class="slide level2 smaller-text">
+<h2>아키텍처</h2>
+<p><span class="tag info">발표 김승환 · 45초</span></p>
+<div class="columns">
+<div class="column" style="width:38%;">
+<p><img data-src="assets/architecture-v4.png" height="500"></p>
+</div><div class="column" style="width:62%;">
+<p>사용자 → CloudFront (+ WAF) → 외부 ALB → Apache → 내부 ALB → Tomcat → RDS Proxy → RDS MySQL</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>계층</th>
+<th>구성</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>웹 서버</td>
+<td>Apache, <code>t4g.micro</code>, Auto Scaling 그룹</td>
+</tr>
+<tr class="even">
+<td>WAS</td>
+<td>Tomcat 9 + Java 8, <code>t4g.small</code>, 2~4대 자동 조정</td>
+</tr>
+<tr class="odd">
+<td>DB 서버</td>
+<td>MySQL 8.4 Multi-AZ, <code>db.t4g.small</code>, RDS Proxy</td>
+</tr>
+</tbody>
+</table>
+<div class="box" data-box-title="핵심 결정">
+<ul>
+<li><span class="hl">NAT 게이트웨이 없음</span>: AWS 서비스는 VPC 엔드포인트로, 서버 접속은 Session Manager로</li>
+<li>서버는 모두 프라이빗 서브넷. 퍼블릭 서브넷에는 외부 ALB만</li>
+<li>전 서버 Arm (Graviton) 인스턴스</li>
+</ul>
+</div>
+<p><span class="muted smallest-text">그림은 보기 쉽게 EC2를 서브넷 안에 그렸다. 서브넷, 보안 그룹, IP 주소가 붙는 대상은 EC2의 네트워크 인터페이스다.</span></p>
+</div></div>
+<aside class="notes">
+<p>45초. 그림을 위에서 아래로 한 번 훑는다. 가로 배치 설계도가 완성되면 그림을 교체하고, 이 슬라이드는 그림을 위에 크게, 표와 핵심 결정을 아래에 두는 배치로 바꾼다. 요청이 CloudFront부터 DB까지 일곱 구간을 지난다는 것, 그리고 오른쪽 상자의 세 가지 결정만 강조한다. VPC 오리진을 쓰지 않은 이유(정액 요금제 Business 이상 필요)는 질문이 나오면 답한다.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section class="slide level2 smaller-text">
+<h2>팀 구성과 작업 방식</h2>
+<p><span class="tag info">발표 김승환 · 35초</span></p>
+<div class="columns">
+<div class="column" style="width:46%;">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>이름</th>
+<th>주 담당</th>
+<th>부 담당</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>김태준 (팀장)</td>
+<td>작업 기반</td>
+<td>PM</td>
+</tr>
+<tr class="even">
+<td>김건형</td>
+<td>WAS</td>
+<td>DB 서버</td>
+</tr>
+<tr class="odd">
+<td>김승환</td>
+<td>PM</td>
+<td>웹 서버</td>
+</tr>
+<tr class="even">
+<td>양진현</td>
+<td>웹 서버</td>
+<td>작업 기반</td>
+</tr>
+<tr class="odd">
+<td>우수빈</td>
+<td>DB 서버</td>
+<td>WAS</td>
+</tr>
+</tbody>
+</table>
+<p><span class="smallest-text">발표는 주 담당 영역을 맡는다. 부 담당 영역은 <strong>교차 수행</strong>으로 검토해 서로의 기술 이해도를 맞췄다.</span></p>
+</div><div class="column" style="width:4%;">
+
+</div><div class="column" style="width:50%;">
+<p><strong>DEV에서 검증하고 PROD에 적용</strong></p>
 <div class="steps cp-steps">
 <ul>
-<li class="fragment">왜 옮기는가, 그리고 왜 지금인가</li>
-<li class="fragment">현재 상태</li>
-<li class="fragment">목표 랜딩 존</li>
-<li class="fragment">웨이브 계획과 6R 처리 방침</li>
-<li class="fragment">코드로 만드는 랜딩 존</li>
-<li class="fragment">전환 런북과 Go / No-Go 게이트</li>
-<li class="fragment">리스크, 책임, 일정</li>
+<li class="fragment"><strong>DEV 구축</strong>: 공용(<code>pet-shared-</code>) 자원과 개발용 자원으로 먼저 만든다</li>
+<li class="fragment"><strong>테스트와 검증</strong>: 동작과 근거를 확인한 결정만 남긴다</li>
+<li class="fragment"><strong>PROD 적용</strong>: 운영용(<code>pet-prod-</code>) 자원을 절차서대로 만든다</li>
 </ul>
 </div>
+<div class="box blue" data-box-title="절차서 10편 + 부록 2편">
+<p>목적 → 선행 조건 → 절차 → 유의 사항. 모든 단계가 <strong>기대 결과</strong>로 끝나서 누가 따라 해도 같은 결과가 나오는지 확인할 수 있다.</p>
+</div>
+</div></div>
 <aside class="notes">
-<p>60초 안에 끝내십시오. 이 슬라이드에서 남길 것은 하나뿐입니다 — Go / No-Go 게이트는 <em>그들이 내리는 결정</em>이고, 덱 뒤쪽에 다시 나온다는 것.</p>
+<p>35초. 강조할 것은 두 가지다. 검증하고 나서 운영에 적용했다는 것(검증 기반 의사결정), 그리고 절차서와 교차 수행으로 구축을 표준화하고 재현할 수 있게 했다는 것. 교차 수행용 IAM 역할(pet-shared-sec-role-review)을 따로 만들어 서로의 작업을 검토했다.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -294,19 +523,147 @@
           display:block!important;
       }</style></aside>
 </section>
-<section class="slide level2">
-<h2>왜 지금인가</h2>
-<p>VMware 갱신 시점은 <strong>2027년 3월</strong>입니다. 그 전에 세 가지가 바뀝니다.</p>
-<div class="focus">
-<p>갱신 견적은 이미 <span class="hl-risk">42% 유휴 상태</span>인 용량에 대해 <span class="hl">3년간 24억 원</span>입니다.</p>
-</div>
+<section class="slide level2 smaller-text">
+<h2>일정과 도구</h2>
+<p><span class="tag info">발표 김승환 · 20초</span></p>
+<div class="columns">
+<div class="column" style="width:56%;">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>날짜</th>
+<th>한 일</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>9. 21.</td>
+<td>킥오프, 기존 애플리케이션 분석</td>
+</tr>
+<tr class="even">
+<td>9. 22. ~ 9. 30.</td>
+<td>DEV 구축과 테스트 (추석 연휴 제외)</td>
+</tr>
+<tr class="odd">
+<td>10. 1. ~ 10. 8.</td>
+<td>PROD 구축, 테스트 설계와 검증</td>
+</tr>
+<tr class="even">
+<td>10. 9. ~ 10. 11.</td>
+<td>교차 수행과 절차서 보완 (연휴)</td>
+</tr>
+<tr class="odd">
+<td>10. 12. ~ 10. 14.</td>
+<td>발표 자료 준비, 최종 발표</td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:4%;">
+
+</div><div class="column" style="width:40%;">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>용도</th>
+<th>도구</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>인프라 관리</td>
+<td>AWS 콘솔, CloudShell, Systems Manager</td>
+</tr>
+<tr class="even">
+<td>개발과 실행</td>
+<td>IntelliJ IDEA, JDK, Tomcat, MySQL</td>
+</tr>
+<tr class="odd">
+<td>협업</td>
+<td>Jira, Notion, GitHub</td>
+</tr>
+<tr class="even">
+<td>시험과 문서화</td>
+<td>k6, Quarto</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<aside class="notes">
+<p>20초. 일정표는 읽지 말고 “DEV 열흘, PROD 일주일, 연휴에 교차 수행”처럼 흐름만 말한다. 도구는 넘어가도 된다.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section class="slide level2 smaller-text">
+<h2>비용 추산과 결정</h2>
+<p><span class="tag info">발표 김승환 · 45초</span></p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>NAT 게이트웨이를 빼고 엔드포인트로</strong></p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>출구 방식</th>
+<th style="text-align: right;">월 고정 요금 (USD)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>NAT 게이트웨이 1개</td>
+<td style="text-align: right;">46.72</td>
+</tr>
+<tr class="even">
+<td>AZ마다 NAT 게이트웨이 (권장 구성)</td>
+<td style="text-align: right;">93.44</td>
+</tr>
+<tr class="odd">
+<td><span class="hl">인터페이스 엔드포인트 6개 (선택)</span></td>
+<td style="text-align: right;">56.94</td>
+</tr>
+</tbody>
+</table>
 <ul>
-<li>분당 IDC 계약이 같은 분기에 종료됩니다</li>
-<li>하이퍼바이저 호스트 4대 중 2대가 2026년에 하드웨어 지원 종료됩니다</li>
-<li>데이터 플랫폼 팀은 이미 옮겼고, 남은 입주 조직은 우리뿐입니다</li>
+<li>NAT 1개보다는 비싸지만, NAT 1개는 그 AZ가 멈추면 다른 AZ도 막힌다</li>
+<li>엔드포인트만 두면 <strong>인터넷으로 나가는 길 자체가 없다</strong></li>
 </ul>
+</div><div class="column" style="width:4%;">
+
+</div><div class="column" style="width:46%;">
+<p><strong>인스턴스 유형: Graviton (t4g)</strong></p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>유형</th>
+<th style="text-align: right;">시간당 (USD)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>t3.micro / t4g.micro</td>
+<td style="text-align: right;">0.013 / <span class="hl-ok">0.0104</span></td>
+</tr>
+<tr class="even">
+<td>t3.small / t4g.small</td>
+<td style="text-align: right;">0.026 / <span class="hl-ok">0.0208</span></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>같은 크기에서 20% 저렴</li>
+<li>웹은 정적 응답과 전달만 해서 micro, WAS는 JVM 메모리 때문에 small</li>
+</ul>
+<p><span class="muted">서울 리전, 730시간 기준. 초안 — 담당자의 추산표로 맞추기</span></p>
+</div></div>
 <aside class="notes">
-<p><code>.focus</code>는 슬라이드의 나머지를 흐리게 만들어, 말하는 동안 그 숫자만 읽히게 합니다. 제목은 일부러 선명하게 둡니다.</p>
+<p>45초. “비용만 보면 NAT 1개가 더 쌌지만 AZ 장애 범위와 보안을 보고 엔드포인트를 골랐다”가 핵심 메시지. 월 고정 요금 전체 추산(약 264 USD, CloudFront 정액 Free 제외)은 질문이 나오면 답한다.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -319,23 +676,110 @@
           display:block!important;
       }</style></aside>
 </section>
-<section class="slide level2">
-<h2>현재 상태</h2>
-<div class="cell" data-reveal="true" data-fig-width="9" data-layout-align="center">
+<section>
+<section class="title-slide slide level1 section-slide center" data-background-color="#0b2545">
+<h1>작업 기반</h1>
+<p>발표 김태준 · 1분 30초</p>
+</section>
+<section class="slide level2 smaller-text">
+<h2>VPC와 서브넷 설계</h2>
+<p><span class="tag info">발표 김태준</span></p>
+<div class="columns">
+<div class="column" style="width:55%;">
+<p><strong>VPC <code>10.9.0.0/22</code>, 서브넷 14개</strong></p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>용도</th>
+<th>AZ A</th>
+<th>AZ C</th>
+<th>크기 이유</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>외부 ALB</td>
+<td>.0.0/27</td>
+<td>.0.64/27</td>
+<td>ALB는 /27 이상</td>
+</tr>
+<tr class="even">
+<td>웹</td>
+<td>.0.128/28</td>
+<td>.0.160/28</td>
+<td>인스턴스만</td>
+</tr>
+<tr class="odd">
+<td>내부 ALB</td>
+<td>.1.0/27</td>
+<td>.1.64/27</td>
+<td>ALB는 /27 이상</td>
+</tr>
+<tr class="even">
+<td>WAS</td>
+<td>.1.128/28</td>
+<td>.1.160/28</td>
+<td>인스턴스만</td>
+</tr>
+<tr class="odd">
+<td>RDS Proxy</td>
+<td>.2.0/27</td>
+<td>.2.64/27</td>
+<td>여유 IP 10개 필요</td>
+</tr>
+<tr class="even">
+<td>DB</td>
+<td>.2.128/28</td>
+<td>.2.160/28</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>엔드포인트</td>
+<td>.3.0/28</td>
+<td>.3.32/28</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:45%;">
+<ul>
+<li>AZ B, D 자리를 <strong>비워 두어</strong> 나중에 AZ를 늘릴 수 있다</li>
+<li>라우팅 테이블은 3개: 퍼블릭(인터넷 게이트웨이), 프라이빗, 엔드포인트</li>
+<li>서브넷마다 AWS가 주소 5개를 예약 → /28은 11개, /27은 27개만 쓸 수 있다</li>
+<li>Docker, EKS 기본 대역과 가정용 공유기 대역을 피했다</li>
+</ul>
+</div></div>
+<aside class="notes">
+<p>45초. 서브넷 크기를 ’서비스가 요구하는 최소 여유 IP’로 정했다는 것이 핵심. ALB는 /27 이상에 여유 8개, RDS Proxy는 db.*.xlarge 이하에서 여유 10개.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section class="slide level2 smaller-text">
+<h2>보안 그룹 사슬과 관리 접속</h2>
+<p><span class="tag info">발표 김태준</span></p>
+<div class="cell" data-reveal="true" data-fig-width="11" data-layout-align="center">
 <div class="cell-output-display">
 <div>
 <p></p><figure class=""><p></p>
 <div>
 <pre class="mermaid mermaid-js">flowchart LR
-  subgraph DC["분당 IDC"]
-    ESX["VMware ESXi&lt;br/&gt;호스트 4대"]
-    SAN[("NetApp SAN&lt;br/&gt;120 TB")]
-    APP["애플리케이션 61개"]
-    ESX --- SAN
-    ESX --- APP
-  end
-  USERS["임직원 VPN"] --&gt; DC
-  DC --&gt; AZ["Azure&lt;br/&gt;데이터 플랫폼만"]
+  CF["CloudFront&lt;br/&gt;접두사 목록"] --&gt;|80| ALBE["외부 ALB"]
+  ALBE --&gt;|80| WEB["웹"]
+  WEB --&gt;|80| ALBI["내부 ALB"]
+  ALBI --&gt;|8080| WAS["WAS"]
+  WAS --&gt;|3306| PX["RDS Proxy"]
+  PX --&gt;|3306| DB["RDS"]
+  WEB -.-&gt;|443| VE["엔드포인트&lt;br/&gt;ssm, ssmmessages,&lt;br/&gt;secretsmanager, monitoring"]
+  WAS -.-&gt;|443| VE
 </pre>
 </div>
 <p></p></figure><p></p>
@@ -343,202 +787,57 @@
 </div>
 </div>
 <ul>
-<li>애플리케이션 61개, VM 214대, 소유 조직 9곳</li>
-<li><span class="hl-risk">믿을 만한 현행 CMDB가 없습니다</span> — 디스커버리 진행 중</li>
+<li>각 계층은 <strong>바로 앞 계층의 보안 그룹</strong>만 출처로 허용한다</li>
+<li>SSH 포트를 열지 않고 Session Manager로 접속. SSM Agent가 엔드포인트로 먼저 연결한다</li>
+<li>패키지는 S3 게이트웨이 엔드포인트로 받는다 (Amazon Linux 저장소, 팀 패키지 버킷)</li>
 </ul>
-</section>
-<section class="slide level2">
-<h2>목표 랜딩 존</h2>
-<div class="cell" data-reveal="true" data-fig-width="9" data-layout-align="center">
-<div class="cell-output-display">
-<div>
-<p></p><figure class=""><p></p>
-<div>
-<pre class="mermaid mermaid-js">flowchart TB
-  MG["관리 그룹: Cloud 9"] --&gt; PLAT["플랫폼"]
-  MG --&gt; LZ["랜딩 존"]
-  PLAT --&gt; CONN["연결&lt;br/&gt;vWAN + Firewall"]
-  PLAT --&gt; IDENT["아이덴티티"]
-  PLAT --&gt; MGMT["관리&lt;br/&gt;Log Analytics"]
-  LZ --&gt; CORP["corp-prod"]
-  LZ --&gt; CORPN["corp-nonprod"]
-  LZ --&gt; ONL["online"]
-</pre>
+<div class="box amber" data-box-title="배운 점 (초안 — 본인 말로 바꾸기)">
+<p>NAT 게이트웨이를 빼면 서버가 부르는 AWS 서비스마다 엔드포인트와 정책이 필요하다. 하나라도 빠지면 그 기능만 조용히 멈춘다.</p>
 </div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
-<div class="box" data-box-title="오늘 필요한 결정">
-<p>Terraform이 아니라 <strong>Bicep 기반 ALZ v4</strong>를 제안합니다. 플랫폼 조직이 데이터 자산을 이미 Bicep으로 운영하고 있기 때문입니다. 툴체인 하나, 리뷰 하나.</p>
-</div>
-</section>
-<section class="slide level2">
-<h2>전환 웨이브</h2>
-<table class="caption-top">
-<colgroup>
-<col style="width: 15%">
-<col style="width: 15%">
-<col style="width: 17%">
-<col style="width: 33%">
-<col style="width: 17%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>웨이브</th>
-<th>시기</th>
-<th>범위</th>
-<th>처리 방침</th>
-<th>책임</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>0</td>
-<td>2026 1분기</td>
-<td>랜딩 존, 연결, 아이덴티티</td>
-<td>—</td>
-<td>플랫폼</td>
-</tr>
-<tr class="even">
-<td>1</td>
-<td>2026 2분기</td>
-<td>저위험 내부 앱 18개</td>
-<td>Rehost</td>
-<td>App Ops</td>
-</tr>
-<tr class="odd">
-<td>2</td>
-<td>2026 3분기</td>
-<td>현업 앱 34개</td>
-<td>Rehost / Replatform</td>
-<td>App Ops</td>
-</tr>
-<tr class="even">
-<td>3</td>
-<td>2026 4분기</td>
-<td><span class="hl-risk">규제 대상 앱 9개</span></td>
-<td>Replatform / Refactor</td>
-<td>리스크 + App Ops</td>
-</tr>
-</tbody>
-</table>
-<div class="box">
-<p>웨이브 3은 금융감독원 변경 신고 기간이 <strong>2026년 9월 14일</strong>에 닫히기 전에는 시작할 수 없습니다. 계획 전체에서 움직이지 않는 유일한 제약입니다.</p>
-</div>
+<aside class="notes">
+<p>45초. 화살표를 왼쪽부터 따라가며 “출처가 IP가 아니라 앞 계층의 보안 그룹”이라고 말한다. IAM 그룹 6개와 EC2 역할도 이 파트에서 만들었다는 것을 한 문장으로 덧붙인다.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section class="title-slide slide level1 section-slide center" data-background-color="#0b2545">
+<h1>WAS</h1>
+<p>발표 김건형 · 1분 30초</p>
 </section>
 <section class="slide level2 smaller-text">
-<h2>6R 처리 방침</h2>
+<h2>Tomcat 구성: 인터넷 없이 설치하고 설정을 밖에서 받기</h2>
+<p><span class="tag info">발표 김건형</span></p>
 <div class="columns">
 <div class="column" style="width:50%;">
-<h3>하는 것</h3>
+<p><strong>설치 파일 반입</strong></p>
 <ul>
-<li><strong>Rehost</strong> — 44개, IaaS로 그대로 이전</li>
-<li><strong>Replatform</strong> — 11개, 대부분 SQL → Azure SQL MI</li>
-<li><strong>Refactor</strong> — 2개, 고객 포털과 가격 산정 엔진</li>
+<li>Java 8: <code>dnf</code>로 Corretto 8 설치 후 버전 고정</li>
+<li>Tomcat 9.0.122: 패키지 S3 버킷에 올리고, 받은 뒤 <strong>SHA-512로 검증</strong></li>
+<li>WAR: 로컬에서 빌드해 Session Manager를 거친 SCP로 전송</li>
+<li>모두 Arm (aarch64)용</li>
 </ul>
 </div><div class="column" style="width:50%;">
-<h3>하지 않는 것</h3>
+<p><strong>접속 정보는 코드 밖에</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="" aria-label="1"></a><span class="co"># setenv.sh (발췌)</span></span>
+<span id="cb1-2"><a href="" aria-label="2"></a><span class="va">JDBC_URL</span><span class="op">=</span><span class="va">$(</span><span class="ex">aws</span> ssm get-parameter <span class="dt">\</span></span>
+<span id="cb1-3"><a href="" aria-label="3"></a>  <span class="at">--name</span> /petclinic/prod/jdbc-url ...<span class="va">)</span></span></code></pre></div><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
-<li><strong>Repurchase</strong> — 3개, SaaS로 전환. 현업 소유이고 우리 몫이 아닙니다</li>
-<li><strong>Retire</strong> — <span class="hl-ok">1개</span>, 1월에 폐기</li>
-<li><strong>Retain</strong> — 0개. <span class="pop">IDC에 남는 것은 없습니다.</span></li>
+<li>JDBC URL과 비밀 ARN은 <strong>Parameter Store</strong></li>
+<li>DB 암호는 <strong>Secrets Manager</strong>. JDBC 드라이버가 비밀을 직접 읽는다</li>
+<li>systemd 서비스로 등록, CloudWatch 에이전트로 메모리 지표 수집</li>
 </ul>
 </div></div>
-</section>
-<section class="slide level2 smaller-text">
-<h2>버전 이전 매트릭스</h2>
-<table class="caption-top">
-<colgroup>
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 20%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>구성 요소</th>
-<th>현재</th>
-<th>목표</th>
-<th>지원 종료</th>
-<th>비고</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Windows Server</td>
-<td>2012 R2</td>
-<td>2022</td>
-<td><span class="hl-risk">2023-10 경과</span></td>
-<td>재설치, 이관 불가</td>
-</tr>
-<tr class="even">
-<td>SQL Server</td>
-<td>2014</td>
-<td>Azure SQL MI</td>
-<td><span class="hl-risk">2024-07 경과</span></td>
-<td>호환성 수준 150</td>
-</tr>
-<tr class="odd">
-<td>.NET Framework</td>
-<td>4.6.2</td>
-<td>.NET 8</td>
-<td>2027-01</td>
-<td>재작성 2건</td>
-</tr>
-<tr class="even">
-<td>Java</td>
-<td>8</td>
-<td>17 LTS</td>
-<td>2030-12</td>
-<td>Spring Boot 2 → 3</td>
-</tr>
-<tr class="odd">
-<td>Python</td>
-<td>2.7</td>
-<td>3.12</td>
-<td><span class="hl-risk">2020-01 경과</span></td>
-<td>스크립트 12개</td>
-</tr>
-<tr class="even">
-<td>Node.js</td>
-<td>16</td>
-<td>22 LTS</td>
-<td><span class="hl-risk">2023-09 경과</span></td>
-<td>빌드만 영향</td>
-</tr>
-<tr class="odd">
-<td>Oracle</td>
-<td>12c</td>
-<td>PostgreSQL 16</td>
-<td><span class="hl-risk">2022-03 경과</span></td>
-<td><span class="hl-warn">스키마 변환 필요</span></td>
-</tr>
-</tbody>
-</table>
-<p><span class="smallest-text"><strong>지원 종료</strong>는 제조사가 보안 패치 제공을 멈추는 시점입니다. 이 날짜가 지난 구성 요소는 취약점이 발견돼도 고쳐지지 않으므로, 전환 일정과 무관하게 그 자체로 위험입니다.</span></p>
-<div class="box" data-box-title="읽는 법">
-<p>빨갛게 표시된 <strong>다섯 줄은 이미 지원이 끝났습니다.</strong> 웨이브 순서는 여기서 정해집니다. 대부분은 전환하면서 같이 올리면 되지만, <strong>Oracle → PostgreSQL만 유일하게 재작성</strong>입니다.</p>
-</div>
-</section>
-<section class="slide level2">
-<h2>코드로 만드는 랜딩 존</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-code-line-numbers="|1-3|5-8|10-12"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="" aria-label="1"></a><span class="ex">az</span> deployment mg create <span class="dt">\</span></span>
-<span id="cb1-2"><a href="" aria-label="2"></a>  <span class="at">--management-group-id</span> cloud9 <span class="dt">\</span></span>
-<span id="cb1-3"><a href="" aria-label="3"></a>  <span class="at">--location</span> koreacentral <span class="dt">\</span></span>
-<span id="cb1-4"><a href="" aria-label="4"></a>  <span class="at">--template-file</span> infra/alz/main.bicep <span class="dt">\</span></span>
-<span id="cb1-5"><a href="" aria-label="5"></a>  <span class="at">--parameters</span> <span class="dt">\</span></span>
-<span id="cb1-6"><a href="" aria-label="6"></a>    environment=prod <span class="dt">\</span></span>
-<span id="cb1-7"><a href="" aria-label="7"></a>    connectivityRegion=koreacentral <span class="dt">\</span></span>
-<span id="cb1-8"><a href="" aria-label="8"></a>    logRetentionDays=365 <span class="dt">\</span></span>
-<span id="cb1-9"><a href="" aria-label="9"></a>  <span class="at">--what-if</span></span>
-<span id="cb1-10"><a href="" aria-label="10"></a></span>
-<span id="cb1-11"><a href="" aria-label="11"></a><span class="ex">az</span> deployment mg what-if <span class="dt">\</span></span>
-<span id="cb1-12"><a href="" aria-label="12"></a>  <span class="at">--management-group-id</span> cloud9 <span class="dt">\</span></span>
-<span id="cb1-13"><a href="" aria-label="13"></a>  <span class="at">--template-file</span> infra/alz/main.bicep</span></code></pre></div><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></div>
 <aside class="notes">
-<p>오른쪽 화살표로 넘기십시오 — 스코프, 그다음 파라미터, 그다음 what-if. PDF에서는 흐림 없이 한 번, 평범한 소스로 인쇄됩니다.</p>
+<p>45초. “WAR와 설정을 분리해서 프록시 주소가 바뀌어도 AMI를 다시 만들 필요가 없다”가 핵심.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -552,442 +851,457 @@
       }</style></aside>
 </section>
 <section class="slide level2 smaller-text">
-<h2>전환 런북</h2>
-<div class="cp-boxlines" data-box-lines="7-9">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="" aria-label="1"></a><span class="co"># T-60  원본 앱의 변경을 동결한다</span></span>
-<span id="cb2-2"><a href="" aria-label="2"></a><span class="ex">ansible-playbook</span> freeze.yml <span class="at">-l</span> app-prod</span>
-<span id="cb2-3"><a href="" aria-label="3"></a></span>
-<span id="cb2-4"><a href="" aria-label="4"></a><span class="co"># T-45  마지막 복제를 한 번 더 돌린다</span></span>
-<span id="cb2-5"><a href="" aria-label="5"></a><span class="ex">azcopy</span> sync /mnt/app-data https://cloud9mig.blob.core.windows.net/app-data</span>
-<span id="cb2-6"><a href="" aria-label="6"></a></span>
-<span id="cb2-7"><a href="" aria-label="7"></a><span class="co"># T-30  DNS TTL을 60초로  &lt;-- 되돌릴 수 없는 지점</span></span>
-<span id="cb2-8"><a href="" aria-label="8"></a><span class="ex">az</span> network dns record-set a update <span class="dt">\</span></span>
-<span id="cb2-9"><a href="" aria-label="9"></a>  <span class="at">-g</span> dns-prod <span class="at">-z</span> cloud9.co.kr <span class="at">-n</span> app <span class="at">--set</span> ttl=60</span>
-<span id="cb2-10"><a href="" aria-label="10"></a></span>
-<span id="cb2-11"><a href="" aria-label="11"></a><span class="co"># T-0   레코드를 전환하고 15분간 대시보드를 지켜본다</span></span>
-<span id="cb2-12"><a href="" aria-label="12"></a><span class="ex">az</span> network dns record-set a add-record <span class="dt">\</span></span>
-<span id="cb2-13"><a href="" aria-label="13"></a>  <span class="at">-g</span> dns-prod <span class="at">-z</span> cloud9.co.kr <span class="at">-n</span> app <span class="at">-a</span> 10.42.8.15</span></code></pre></div><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p>T-30 위쪽은 전부 현업 결정 없이 되돌릴 수 있습니다.</p>
-</section>
-<section class="slide level2">
-<h2>Go / No-Go 게이트</h2>
-<div class="steps cp-steps">
-<ul>
-<li class="fragment">목표 환경에서 P1 스모크 테스트 전부 통과</li>
-<li class="fragment">복제 지연 30초 미만이 한 시간 연속 유지</li>
-<li class="fragment">최근 14일 이내에 롤백 리허설 완료</li>
-<li class="fragment">지정된 현업 책임자가 상황 통화에 참여</li>
-</ul>
-</div>
-<div class="box" data-box-title="누가 결정하는가">
-<p><strong>애플리케이션 책임자</strong>가 Go / No-Go를 결정합니다. 플랫폼도, 프로그램 조직도 아닙니다. 우리는 근거를 제공하고, 리스크는 그들이 집니다.</p>
-</div>
-</section>
-<section class="slide level2">
-<h2>리스크</h2>
-<div title="발견되지 않은 의존성">
-<div class="callout callout-important callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>발견되지 않은 의존성</strong></p>
-</div>
-<div class="callout-content">
-<p>디스커버리로 61개 앱을 매핑했지만, 외부 통신 의존성이 확인된 것은 38개뿐입니다. 완화책: 각 웨이브를 동결하기 전에 2주간 트래픽 캡처 기간을 둡니다.</p>
-</div>
-</div>
-</div>
-</div>
-<div title="라이선스 이전 가능성">
-<div class="callout callout-warning callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>라이선스 이전 가능성</strong></p>
-</div>
-<div class="callout-content">
-<p>ISV 계약 3건은 클라우드 조항이 생기기 전에 체결된 것입니다. 법무 검토가 <span class="hl-warn">2월 28일 예정</span>이고, 웨이브 2의 임계 경로 위에 있습니다.</p>
-</div>
-</div>
-</div>
-</div>
-<div title="앞서 있는 부분">
-<div class="callout callout-tip callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>앞서 있는 부분</strong></p>
-</div>
-<div class="callout-content">
-<p>아이덴티티는 끝났습니다. Entra ID Connect가 11월부터 목표 테넌트에서 돌고 있어서, 인증 때문에 막히는 웨이브는 없습니다.</p>
-</div>
-</div>
-</div>
-</div>
-</section>
-<section class="slide level2 smaller-text">
-<h2>책임 분장</h2>
-<table class="caption-top">
-<thead>
-<tr class="header">
-<th>활동</th>
-<th style="text-align: center;">플랫폼</th>
-<th style="text-align: center;">App Ops</th>
-<th style="text-align: center;">앱 책임자</th>
-<th style="text-align: center;">리스크</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>랜딩 존 구축</td>
-<td style="text-align: center;"><strong>A/R</strong></td>
-<td style="text-align: center;">C</td>
-<td style="text-align: center;">I</td>
-<td style="text-align: center;">C</td>
-</tr>
-<tr class="even">
-<td>웨이브 일정 수립</td>
-<td style="text-align: center;">C</td>
-<td style="text-align: center;"><strong>A/R</strong></td>
-<td style="text-align: center;">C</td>
-<td style="text-align: center;">I</td>
-</tr>
-<tr class="odd">
-<td>애플리케이션 테스트</td>
-<td style="text-align: center;">I</td>
-<td style="text-align: center;">C</td>
-<td style="text-align: center;"><strong>A/R</strong></td>
-<td style="text-align: center;">I</td>
-</tr>
-<tr class="even">
-<td>Go / No-Go</td>
-<td style="text-align: center;">C</td>
-<td style="text-align: center;">C</td>
-<td style="text-align: center;"><strong>A</strong></td>
-<td style="text-align: center;"><strong>R</strong></td>
-</tr>
-<tr class="odd">
-<td>전환 후 지원</td>
-<td style="text-align: center;">C</td>
-<td style="text-align: center;"><strong>A/R</strong></td>
-<td style="text-align: center;">C</td>
-<td style="text-align: center;">I</td>
-</tr>
-</tbody>
-</table>
-<p><span class="tag info">A</span> 최종책임 · <span class="tag info">R</span> 실무책임 · <span class="tag">C</span> 협의 · <span class="tag">I</span> 통보</p>
-</section>
-<section class="slide level2">
-<h2>요청 사항</h2>
-<div class="steps cp-steps">
-<ul>
-<li class="fragment">랜딩 존에 <strong>Terraform이 아닌 Bicep</strong>을 쓰는 데 대한 승인</li>
-<li class="fragment">3월부터 12월까지 App Ops 엔지니어 2명 추가</li>
-<li class="fragment"><strong>금융감독원 신고 기간이 9월 14일에 닫힌다</strong>는 확인</li>
-<li class="fragment"><strong>1월 31일</strong>까지 61개 앱 각각의 애플리케이션 책임자 지정</li>
-</ul>
-</div>
-<div class="focus">
-<p>네 번째가 없으면 웨이브 1이 밀리고, 뒤따르는 웨이브가 전부 함께 밀립니다.</p>
-</div>
-</section>
-<section>
-<section class="title-slide slide level1 section-slide center" data-background-color="#0b2545">
-<h1>부록</h1>
-
-</section>
-<section class="slide level2 smaller-text">
-<h2>강조 문법 요약</h2>
-<p>PDF는 슬라이드의 <strong>최종 상태</strong>를 보여줍니다. 아래 표시는 그대로 인쇄되고, 순차 등장·흐림 같은 발표용 동작만 평탄화됩니다. 특정 표시를 인쇄에서 빼려면 <code>.pointer</code>를 덧붙이십시오.</p>
-<div class="columns">
-<div class="column" style="width:52%;">
-<table class="caption-top">
-<thead>
-<tr class="header">
-<th>이렇게 쓰면</th>
-<th>이렇게 됩니다</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>[x]{.hl}</code></td>
-<td><span class="hl">x</span> 형광펜</td>
-</tr>
-<tr class="even">
-<td><code>[x]{.hl-ok}</code></td>
-<td><span class="hl-ok">x</span> 좋은 소식</td>
-</tr>
-<tr class="odd">
-<td><code>[x]{.hl-risk}</code></td>
-<td><span class="hl-risk">x</span> 리스크</td>
-</tr>
-<tr class="even">
-<td><code>[x]{.box}</code></td>
-<td><span class="box">x</span> 빨간 상자</td>
-</tr>
-<tr class="odd">
-<td><code>[x]{.circle}</code></td>
-<td><span class="circle">x</span> 동그라미</td>
-</tr>
-<tr class="even">
-<td><code>[x]{.uline}</code></td>
-<td><span class="uline">x</span> 밑줄</td>
-</tr>
-<tr class="odd">
-<td><code>[x]{.pop}</code></td>
-<td><span class="pop">x</span> 크게</td>
-</tr>
-<tr class="even">
-<td><code>[x]{.pulse}</code></td>
-<td><span class="pulse">x</span> 굵은 테두리</td>
-</tr>
-</tbody>
-</table>
-</div><div class="column" style="width:48%;">
-<table class="caption-top">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>이렇게 쓰면</th>
-<th>이렇게 됩니다</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>::: {.box}</code></td>
-<td>블록을 빨간 상자로</td>
-</tr>
-<tr class="even">
-<td><code>::: {.box title="X"}</code></td>
-<td>…라벨까지 붙여서</td>
-</tr>
-<tr class="odd">
-<td><code>::: {.focus}</code></td>
-<td>나머지가 흐려짐</td>
-</tr>
-<tr class="even">
-<td><code>::: {.dim}</code></td>
-<td>이 블록만 뒤로</td>
-</tr>
-<tr class="odd">
-<td><code>::: {.steps}</code></td>
-<td>하나씩, 앞 것도 계속 읽힘</td>
-</tr>
-<tr class="even">
-<td><span class="mono">```{.bash code-line-numbers="1|3"}</span></td>
-<td>코드를 한 단계씩</td>
-</tr>
-<tr class="odd">
-<td><span class="mono">```{.bash box-lines="7-9"}</span></td>
-<td>소스 줄에 빨간 상자</td>
-</tr>
-<tr class="even">
-<td><code>.pointer</code></td>
-<td>이 표시만 PDF에서 제외</td>
-</tr>
-</tbody>
-</table>
-</div></div>
-</section>
-<section class="slide level2 smaller-text">
-<h2>글꼴</h2>
-<p>기본값은 구글이 제공하는 <strong>Noto Sans KR</strong>(본문)과 <strong>Noto Sans Mono</strong>(코드)이고, <code>_extensions/cloudpres/fonts.html</code>에서 불러옵니다.</p>
-<p>가진 글꼴 파일을 쓰려면 두 단계입니다. <code>.woff2</code>를 <code>assets/fonts/</code>에 넣고 <code>fonts.html</code>의 <code>@font-face</code> 주석을 푼 다음, <code>theme.scss</code>의 <code>$cp-font-sans</code> 첫 이름을 바꾸면 됩니다.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource scss number-lines code-with-copy"><code class="sourceCode scss"><span id="cb3-1"><a href="" aria-label="1"></a><span class="co">// theme.scss</span></span>
-<span id="cb3-2"><a href="" aria-label="2"></a><span class="va">$cp-font-sans</span>: <span class="st">"Pretendard"</span><span class="op">,</span> <span class="st">"Noto Sans KR"</span><span class="op">,</span> <span class="st">"Malgun Gothic"</span><span class="op">,</span> <span class="dv">sans-serif</span> <span class="at">!default</span><span class="op">;</span></span></code></pre></div><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="box blue" data-box-title="폐쇄망이라면">
-<p><code>fonts.html</code>의 <code>&lt;link&gt;</code> 세 줄을 지우고 <code>.woff2</code> 파일만 쓰십시오. 웹폰트를 못 받아도 <code>Malgun Gothic</code>으로 떨어지므로 한글이 깨지지는 않습니다.</p>
-</div>
-</section>
-<section class="slide level2 smaller-text">
-<h2>화면 비율과 여백</h2>
-<p>슬라이드 크기와 여백은 <code>_extensions/cloudpres/_extension.yml</code>에 있습니다. 덱 하나만 다르게 하려면 그 덱의 머리말에 같은 키를 써도 됩니다.</p>
-<div class="columns">
-<div class="column" style="width:46%;">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource yaml number-lines code-with-copy"><code class="sourceCode yaml"><span id="cb4-1"><a href="" aria-label="1"></a><span class="fu">width</span><span class="kw">:</span><span class="at"> </span><span class="dv">1280</span><span class="co">      # 16:9 (기본)</span></span>
-<span id="cb4-2"><a href="" aria-label="2"></a><span class="fu">height</span><span class="kw">:</span><span class="at"> </span><span class="dv">720</span></span>
-<span id="cb4-3"><a href="" aria-label="3"></a><span class="fu">margin</span><span class="kw">:</span><span class="at"> </span><span class="fl">0.06</span><span class="co">     # 0~1, 내용 둘레 여백</span></span></code></pre></div><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></div>
-<table class="caption-top">
-<thead>
-<tr class="header">
-<th>비율</th>
-<th>width / height</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>16:9</td>
-<td>1280 / 720</td>
-</tr>
-<tr class="even">
-<td>16:10</td>
-<td>1280 / 800</td>
-</tr>
-<tr class="odd">
-<td>4:3</td>
-<td>1024 / 768</td>
-</tr>
-</tbody>
-</table>
-</div><div class="column" style="width:54%;">
-<p><strong>PDF는 화면 비율을 그대로 따라갑니다.</strong> 따로 설정할 것이 없습니다. 페이지 크기가 이렇게 정해집니다.</p>
-<div class="box blue">
-<p><code>width × (1 + margin)</code> × <code>height × (1 + margin)</code></p>
-</div>
-<p>그래서 <code>margin</code>을 키우면 화면과 PDF 양쪽에서 여백이 같이 늘어납니다.</p>
-</div></div>
-<div class="box" data-box-title="인쇄에만 여백을 더 주고 싶다면">
-<p><code>margin</code>은 화면과 PDF에 함께 적용됩니다. PDF 에만 더 주려면 <code>print-clean.scss</code> 맨 위의 <code>$cp-print-inset</code>을 0에서 올리십시오. 하단 바는 페이지 가장자리에 그대로 남고 내용만 안쪽으로 들어갑니다.</p>
-</div>
-</section>
-<section class="slide level2 smaller-text">
-<h2>다단 레이아웃</h2>
-<p>바깥을 콜론 <strong>네 개</strong> <code>::::</code>, 각 단을 콜론 <strong>세 개</strong> <code>:::</code>로 감쌉니다.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb5-1"><a href="" aria-label="1"></a>:::: {.columns}</span>
-<span id="cb5-2"><a href="" aria-label="2"></a>::: {.column width="50%"}</span>
-<span id="cb5-3"><a href="" aria-label="3"></a>왼쪽 내용</span>
-<span id="cb5-4"><a href="" aria-label="4"></a>:::</span>
-<span id="cb5-5"><a href="" aria-label="5"></a>::: {.column width="50%"}</span>
-<span id="cb5-6"><a href="" aria-label="6"></a>오른쪽 내용</span>
-<span id="cb5-7"><a href="" aria-label="7"></a>:::</span>
-<span id="cb5-8"><a href="" aria-label="8"></a>::::</span></code></pre></div><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></div>
-<p>아래는 세 단으로 실제 렌더한 모습입니다.</p>
-<div class="columns">
-<div class="column" style="width:32%;">
-<p><span class="tag info">하나</span> 기획</p>
-</div><div class="column" style="width:32%;">
-<p><span class="tag info">둘</span> 구현</p>
-</div><div class="column" style="width:32%;">
-<p><span class="tag info">셋</span> 검증</p>
-</div></div>
-<div class="box amber" data-box-title="너비 합을 넘기지 마십시오">
-<p>Quarto가 각 단을 <code>inline-block</code>으로 배치하기 때문에, 합이 100%를 넘는 순간 마지막 단이 아래로 밀려 내려갑니다. 단 사이 여백도 직접 주지 마십시오. 세 단이면 <strong>32% 씩</strong>이 안전합니다. 단 안에 또 단을 넣는 중첩도 피하십시오.</p>
-</div>
-</section>
-<section class="slide level2 smaller-text">
-<h2>이미지</h2>
-<div class="columns">
-<div class="column" style="width:52%;">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="" aria-label="1"></a><span class="al">![캡션은 이렇게](assets/그림.png)</span></span>
-<span id="cb6-2"><a href="" aria-label="2"></a></span>
-<span id="cb6-3"><a href="" aria-label="3"></a><span class="al">![](assets/그림.png)</span>{width=60%}</span></code></pre></div><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></div>
-<p>이미지는 <code>assets/</code>에 넣고 그 경로로 부릅니다. <code>_quarto.yml</code>의 <code>resources: assets/**</code>가 <code>_output/</code>으로 복사해 줍니다.</p>
-<p>슬라이드에 이미지가 하나뿐이면 Quarto가 높이에 맞춰 자동으로 늘립니다. 원본 크기로 두려면 <code>{.nostretch}</code>를 붙이십시오.</p>
-<p>슬라이드 전체를 채우려면:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb7-1"><a href="" aria-label="1"></a><span class="fu">## 제목 {background-image="assets/그림.jpg"}</span></span></code></pre></div><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></div>
-</div><div class="column" style="width:48%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="assets/logo.svg" style="width:70.0%"></p>
-<figcaption>Cloud 9 로고 — 자리 표시용입니다</figcaption>
-</figure>
-</div>
-</div></div>
-</section>
-<section class="slide level2 smaller-text">
-<h2>영상 임베드</h2>
-<div class="columns">
-<div class="column" style="width:46%;">
-<p><code>video</code> shortcode 하나면 됩니다. YouTube, Vimeo, 로컬 파일 모두 같은 문법입니다.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb8-1"><a href="" aria-label="1"></a>::: {.screen-only}</span>
-<span id="cb8-2"><a href="" aria-label="2"></a>{{&lt; video</span>
-<span id="cb8-3"><a href="" aria-label="3"></a>  https://www.youtube.com/embed/ID &gt;}}</span>
-<span id="cb8-4"><a href="" aria-label="4"></a>:::</span>
-<span id="cb8-5"><a href="" aria-label="5"></a></span>
-<span id="cb8-6"><a href="" aria-label="6"></a>::: {.print-only}</span>
-<span id="cb8-7"><a href="" aria-label="7"></a><span class="al">![시연 화면](assets/시연.png)</span></span>
-<span id="cb8-8"><a href="" aria-label="8"></a>:::</span></code></pre></div><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></div>
-<p>화면에서는 영상이, PDF에서는 그림이 나옵니다. 그림은 직접 준비하십시오.</p>
-<div class="box" data-box-title="YouTube 오류 153이 뜬다면">
-<p>파일을 더블클릭해서 <code>file://</code>로 연 경우입니다. YouTube는 임베드에 출처(referrer)를 요구하는데 <code>file://</code>에는 그게 없습니다. <code>.\render.cmd -Preview</code>로 열거나 배포된 주소로 보면 정상입니다.</p>
-</div>
-</div><div class="column" style="width:54%;">
-<div class="screen-only">
-<iframe data-external="1" src="https://www.youtube.com/embed/M7lc1UVf-VE" width="100%" height="300" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
-</div>
-<div class="print-only">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="assets/logo.svg" style="width:60.0%"></p>
-<figcaption>여기에 시연 화면 캡처가 들어갑니다</figcaption>
-</figure>
-</div>
-</div>
-<p><span class="muted smallest-text">화면용 샘플은 Google for Developers 채널의 공식 영상입니다.</span></p>
-</div></div>
-</section>
-<section class="slide level2 smaller-text">
-<h2>발표와 내보내기</h2>
+<h2>내부 ALB와 Auto Scaling</h2>
+<p><span class="tag info">발표 김건형</span></p>
 <div class="columns">
 <div class="column" style="width:50%;">
-<h3>발표 중</h3>
+<p><strong>내부 ALB 대상 그룹</strong></p>
 <table class="caption-top">
 <thead>
 <tr class="header">
-<th>키</th>
-<th>동작</th>
+<th>항목</th>
+<th>값</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>Home</code> / <code>End</code></td>
-<td>첫 장 / 마지막 장</td>
+<td>상태 확인 경로</td>
+<td><code>/petclinic/</code> (DB를 읽지 않는 첫 화면)</td>
 </tr>
 <tr class="even">
-<td><code>S</code></td>
-<td>발표자 화면 (노트)</td>
+<td>간격, 정상, 비정상</td>
+<td>20초, 3회, 2회</td>
 </tr>
 <tr class="odd">
-<td><code>F</code></td>
-<td>전체 화면</td>
-</tr>
-<tr class="even">
-<td><code>O</code> / <code>Esc</code></td>
-<td>슬라이드 개요</td>
-</tr>
-<tr class="odd">
-<td><code>B</code></td>
-<td>화면 끄기</td>
-</tr>
-<tr class="even">
-<td><code>C</code></td>
-<td>칠판 — 슬라이드에 직접 그리기</td>
-</tr>
-<tr class="odd">
-<td><code>Shift</code>+<code>E</code></td>
-<td>모든 강조 표시 제거</td>
-</tr>
-<tr class="even">
-<td><code>?</code></td>
-<td>단축키 전체</td>
+<td>장애 감지</td>
+<td>약 40초</td>
 </tr>
 </tbody>
 </table>
 </div><div class="column" style="width:50%;">
-<h3>내보내기</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource powershell number-lines code-with-copy"><code class="sourceCode powershell"><span id="cb9-1"><a href="" aria-label="1"></a><span class="co"># _output/ 에 HTML과 깔끔한 PDF</span></span>
-<span id="cb9-2"><a href="" aria-label="2"></a><span class="op">.</span>\render<span class="op">.</span><span class="fu">cmd</span> <span class="op">-</span>Pdf</span></code></pre></div><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></div>
-<p>직접 하려면: 렌더된 덱을 열고 URL 뒤에 <code>?print-pdf</code>를 붙인 다음, <strong>배경 그래픽</strong>을 켜고 여백을 <strong>없음</strong>으로 해서 PDF로 인쇄하십시오.</p>
-<div class="box green" data-box-title="PDF는 이렇게 나옵니다">
-<p>슬라이드당 한 쪽, 최종 상태, 형광펜도 흐림도 빨간 상자도 없이 — 그리고 모든 쪽에 권리 표시와 쪽 번호.</p>
+<p><strong>Auto Scaling 그룹</strong></p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>항목</th>
+<th>값</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>대수</td>
+<td>최소 2, 최대 4</td>
+</tr>
+<tr class="even">
+<td>조정 기준</td>
+<td>평균 CPU 70%</td>
+</tr>
+<tr class="odd">
+<td>AZ 분산</td>
+<td>Balanced best effort</td>
+</tr>
+<tr class="even">
+<td>교체 방식</td>
+<td>새 인스턴스를 먼저 띄움 (150%)</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<div class="box amber" data-box-title="배운 점 (초안 — 본인 말로 바꾸기)">
+<p>상태 확인 경로가 DB를 읽으면 DB 장애 하나에 멀쩡한 WAS까지 모두 교체된다. 그래서 DB와 무관한 경로를 골랐다.</p>
+</div>
+<aside class="notes">
+<p>45초. 구성한 WAS로 AMI → 시작 템플릿 → Auto Scaling 그룹 순서로 만들었다는 흐름을 말한다.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section class="title-slide slide level1 section-slide center" data-background-color="#0b2545">
+<h1>DB 서버</h1>
+<p>발표 우수빈 · 1분 30초</p>
+</section>
+<section class="slide level2 smaller-text">
+<h2>RDS MySQL과 RDS Proxy</h2>
+<p><span class="tag info">발표 우수빈</span></p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>RDS for MySQL 8.4</strong></p>
+<ul>
+<li>Multi-AZ DB 인스턴스: AZ A 기본, AZ C 대기, 동기 복제</li>
+<li><code>db.t4g.small</code>, gp3 20 GiB, 자동 백업 7일, 삭제 방지</li>
+<li>파라미터 그룹: <code>utf8mb4</code>, <code>Asia/Seoul</code></li>
+<li>8.0이 아니라 8.4: 8.0은 연장 지원 요금 대상</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<p><strong>RDS Proxy</strong></p>
+<ul>
+<li>WAS는 DB가 아니라 <strong>프록시에 연결</strong></li>
+<li>장애 조치 중에도 프록시 주소는 그대로</li>
+<li><span class="hl">TLS 필수</span>: <code>caching_sha2_password</code> 인증에 필요</li>
+<li>최대 연결 80%: <code>max_connections</code> 137 중 약 109개만 쓰고 나머지는 관리용</li>
+</ul>
+</div></div>
+<aside class="notes">
+<p>45초. Multi-AZ는 ’읽기 분산’이 아니라 ’장애 조치’용이라는 점, 프록시가 장애 조치 때 연결을 지켜 준다는 점을 말한다.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section class="slide level2 smaller-text">
+<h2>계정과 접근 경로 분리</h2>
+<p><span class="tag info">발표 우수빈</span></p>
+<div class="columns">
+<div class="column" style="width:55%;">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>계정</th>
+<th>쓰는 곳</th>
+<th>보관</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>마스터 <code>cloud9</code></td>
+<td>관리 작업만</td>
+<td>RDS가 관리하는 비밀</td>
+</tr>
+<tr class="even">
+<td>앱 <code>cloud9-pet</code></td>
+<td>PetClinic</td>
+<td>Secrets Manager <code>pet-prod-db-sm</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>앱 계정은 <code>petclinic</code> DB의 필요한 권한만</li>
+<li>계정 생성 때만 WAS→RDS 임시 규칙을 열고, 작업 뒤 삭제</li>
+<li>이제 DB 보안 그룹은 <strong>프록시만</strong> 허용 → 직접 접속은 시간 초과</li>
+</ul>
+</div><div class="column" style="width:45%;">
+<p><strong>데이터 적재</strong></p>
+<ul>
+<li>WAR가 시작 때 SQL을 돌리지 않게 바꾸고 스키마를 직접 적재</li>
+<li>부하 시험용 데이터 10만 건 (owners 2만, pets 3만, visits 5만)</li>
+</ul>
+<div class="box amber" data-box-title="배운 점 (초안)">
+<p>본인 경험으로 한두 문장</p>
 </div>
 </div></div>
-
+<aside class="notes">
+<p>45초. “앱은 마스터 계정을 모른다”와 “DB에 닿는 길은 프록시 하나”를 강조한다. 부하 시험용 데이터를 누가 넣었는지 확인해서 담당자에 맞게 옮긴다(초안).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section></section>
+<section>
+<section class="title-slide slide level1 section-slide center" data-background-color="#0b2545">
+<h1>웹 서버와 CloudFront</h1>
+<p>발표 양진현 · 1분 30초</p>
+</section>
+<section class="slide level2 smaller-text">
+<h2>Apache 리버스 프록시</h2>
+<p><span class="tag info">발표 양진현</span></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-code-line-numbers="|5-6|10"><pre class="sourceCode numberSource apache number-lines code-with-copy"><code class="sourceCode apache"><span id="cb2-1"><a href="" aria-label="1"></a><span class="fu">&lt;VirtualHost</span><span class="at"> *:80</span><span class="fu">&gt;</span></span>
+<span id="cb2-2"><a href="" aria-label="2"></a>    ProxyAddHeaders On</span>
+<span id="cb2-3"><a href="" aria-label="3"></a>    <span class="ex">ProxyPreserveHost</span><span class="ch"> </span><span class="kw">On</span></span>
+<span id="cb2-4"><a href="" aria-label="4"></a>    <span class="ex">RewriteEngine</span><span class="ch"> </span><span class="kw">On</span></span>
+<span id="cb2-5"><a href="" aria-label="5"></a>    <span class="co"># /petclinic 으로 오면 /petclinic/ 으로 301</span></span>
+<span id="cb2-6"><a href="" aria-label="6"></a>    RewriteRule<span class="st"> ^/petclinic$ https://%{HTTP_HOST}/petclinic/ [R=301,L]</span></span>
+<span id="cb2-7"><a href="" aria-label="7"></a>    <span class="co"># ttl=55: ALB 유휴 제한(60초)보다 먼저 닫는다</span></span>
+<span id="cb2-8"><a href="" aria-label="8"></a>    <span class="co"># addressttl=30: ALB IP가 바뀌어도 30초 안에 다시 조회</span></span>
+<span id="cb2-9"><a href="" aria-label="9"></a>    ProxyPass<span class="st">        "/petclinic/" "http://&lt;INTERNAL_ALB_DNS&gt;/petclinic/" ttl=55 addressttl=30</span></span>
+<span id="cb2-10"><a href="" aria-label="10"></a>    ProxyPassReverse<span class="st"> "/petclinic/" "http://&lt;INTERNAL_ALB_DNS&gt;/petclinic/"</span></span>
+<span id="cb2-11"><a href="" aria-label="11"></a><span class="fu">&lt;/VirtualHost&gt;</span></span></code></pre></div><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><code>/petclinic/</code>만 WAS로 넘기고, 나머지는 Apache가 직접 응답</li>
+<li>내부 ALB는 IP가 아니라 <strong>DNS 이름</strong>으로 가리킨다</li>
+<li>SELinux에서 <code>httpd_can_network_connect</code> 허용</li>
+</ul>
+<aside class="notes">
+<p>45초. ttl을 ALB 유휴 시간보다 짧게 두는 이유(ALB가 먼저 끊은 연결을 다시 쓰면 502)를 한 문장으로.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section class="slide level2 smaller-text">
+<h2>CloudFront와 외부 ALB 보호</h2>
+<p><span class="tag info">발표 양진현</span></p>
+<div class="columns">
+<div class="column" style="width:48%;">
+<p><strong>CloudFront (정액 요금제 Free)</strong></p>
+<ul>
+<li>사용자 구간만 HTTPS. ALB에는 인증서가 없어 오리진은 HTTP</li>
+<li>동적 페이지라 캐싱 끔, 쿼리 문자열과 쿠키는 모두 전달</li>
+<li>오류 시 S3의 공통 오류 페이지 (<code>/pet_*</code>, OAC)</li>
+<li>WAF 속도 제한: IP마다 5분에 300건 (차단 모드인지 확인)</li>
+</ul>
+</div><div class="column" style="width:4%;">
+
+</div><div class="column" style="width:48%;">
+<p><strong>외부 ALB에 CloudFront만 닿게</strong></p>
+<ol type="1">
+<li>보안 그룹: CloudFront 관리형 <strong>접두사 목록</strong>만 허용</li>
+<li>리스너: <strong>비밀 헤더</strong>가 있는 요청만 전달, 나머지는 403</li>
+</ol>
+<div class="box amber" data-box-title="왜 둘 다?">
+<p>접두사 목록은 <strong>다른 사람의 CloudFront 배포</strong>도 통과시킨다. 비밀 헤더가 우리 배포만 골라낸다.</p>
+</div>
+</div></div>
+<aside class="notes">
+<p>45초. VPC 오리진을 쓰면 ALB를 internal로 둘 수 있지만 정액 요금제 Business(월 200 USD) 이상이 필요해서 internet-facing ALB + 두 겹 보호를 택했다고 말한다.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section class="title-slide slide level1 section-slide center" data-background-color="#0b2545">
+<h1>부하 시험과 마무리</h1>
+<p>발표 김승환 · 45초</p>
+</section>
+<section class="slide level2 smaller-text">
+<h2>부하 시험 (k6)</h2>
+<p><span class="tag info">발표 김승환 · 15초</span></p>
+<div class="columns">
+<div class="column" style="width:45%;">
+<ul>
+<li>인터넷이 없는 Arm 인스턴스라 k6 Arm 실행 파일을 <strong>패키지 버킷으로 반입</strong></li>
+<li>테스트 데이터 10만 건을 넣고 시험</li>
+<li>시나리오: 목록 조회, 상세 조회, 등록 (초안)</li>
+</ul>
+</div><div class="column" style="width:55%;">
+<div class="box" data-box-title="결과 (초안 — 실제 값으로 채우기)">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>항목</th>
+<th>값</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>가상 사용자 수</td>
+<td>—</td>
+</tr>
+<tr class="even">
+<td>초당 요청</td>
+<td>—</td>
+</tr>
+<tr class="odd">
+<td>p95 응답 시간</td>
+<td>—</td>
+</tr>
+<tr class="even">
+<td>오류율</td>
+<td>—</td>
+</tr>
+<tr class="odd">
+<td>WAS 확장 여부</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div></div>
+<aside class="notes">
+<p>15초. 결과 한 줄과 거기서 얻은 결론 하나만 말한다. 그래프가 있으면 오른쪽 상자를 그림으로 바꾼다.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section class="slide level2 smaller-text">
+<h2>배운 점과 남은 과제</h2>
+<p><span class="tag info">발표 김승환 · 15초</span></p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>배운 점 (초안)</strong></p>
+<ul>
+<li>구축보다 <strong>이유를 설명하는 것</strong>이 어렵다. 모든 설정 값에 근거를 남겼다</li>
+<li>절차서를 남이 따라 해 보면 빠진 단계가 드러난다</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<p><strong>남은 과제</strong></p>
+<ul>
+<li>ssm 엔드포인트가 AZ A에만 있어, AZ A 장애 때 새 WAS가 설정을 못 읽을 수 있다 → AZ C 추가</li>
+<li>WAF 속도 제한을 모니터 모드에서 <strong>차단 모드로</strong> 전환</li>
+<li>WAS 정상 대상 수 경보 (SNS 이메일)</li>
+<li>수작업 구축을 IaC로 옮기기</li>
+</ul>
+</div></div>
+<aside class="notes">
+<p>15초. 남은 과제를 스스로 말하면 질문이 그쪽으로 오기 쉽고, 답도 준비되어 있다.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section class="slide level2 smaller-text">
+<h2>최종 결과물</h2>
+<p><span class="tag info">발표 김승환 · 15초</span></p>
+<div class="steps cp-steps">
+<ul>
+<li class="fragment"><strong>설계도</strong>: 3계층, AZ 두 곳, NAT 게이트웨이 없는 구성</li>
+<li class="fragment"><strong>IP 주소 지도와 보안 그룹</strong>: 서브넷 14개, 앞 계층만 허용하는 보안 그룹 사슬</li>
+<li class="fragment"><strong>VPC 엔드포인트</strong>: ssm, ssmmessages, secretsmanager, monitoring, S3</li>
+<li class="fragment"><strong>절차서</strong>: 구축 단계 전체와 정책 파일, 설정 파일 (GitHub 저장소와 Wiki)</li>
+<li class="fragment"><strong>WAS 대시보드</strong>: 요청을 처리한 WAS와 대상 상태 → 시연에서 확인</li>
+</ul>
+</div>
+<aside class="notes">
+<p>15초. 마지막 항목을 말하면서 시연으로 넘어간다.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section class="title-slide slide level1 section-slide center" data-background-color="#0b2545">
+<h1>시연</h1>
+<div class="lead">
+<p>5분</p>
+</div>
+<aside class="notes">
+<p>시연 순서 초안: 1. CloudFront 주소로 접속 → 안내 페이지 → /petclinic/ → 소유자 검색, 등록 2. whoami.jsp 새로 고침 → WAS 두 대의 IP가 번갈아 나옴 (내부 ALB 분산) 3. 없는 경로 접속 → S3 공통 오류 페이지 4. ALB 주소로 직접 접속 → 시간 초과 (CloudFront만 허용) 5. (여유가 있으면) Session Manager로 WAS 접속, Auto Scaling 그룹 화면</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section class="slide level2 smaller-text">
+<h2>감사합니다</h2>
+<div class="lead">
+<p>질문을 받겠습니다.</p>
+</div>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>이름</th>
+<th>주 담당</th>
+<th>부 담당</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>김태준 (팀장)</td>
+<td>작업 기반 (IAM, VPC, 보안 그룹, 엔드포인트)</td>
+<td>PM</td>
+</tr>
+<tr class="even">
+<td>김건형</td>
+<td>WAS</td>
+<td>DB 서버</td>
+</tr>
+<tr class="odd">
+<td>김승환</td>
+<td>PM (일정, 비용 추산, k6 부하 시험)</td>
+<td>웹 서버</td>
+</tr>
+<tr class="even">
+<td>양진현</td>
+<td>웹 서버, CloudFront</td>
+<td>작업 기반</td>
+</tr>
+<tr class="odd">
+<td>우수빈</td>
+<td>DB 서버</td>
+<td>WAS</td>
+</tr>
+</tbody>
+</table>
+<p><span class="muted">절차서: GitHub Wiki <code>cldnn/petclinic-infra</code></span></p>
+</section></section>
+<section class="title-slide slide level1 section-slide center" data-background-color="#0b2545">
+<h1>부록</h1>
+<p>보충 설명용 슬라이드</p>
+<aside class="notes">
+<p>질문에 답할 때 꺼내 쓸 슬라이드를 이 뒤에 둔다. 예: 월 고정 요금 전체 표, IAM 그룹과 정책, 타임아웃 사슬, CloudFront 정액 요금제 비교, AZ 장애 때의 동작.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+
+</section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">
-<p>© 2026 Cloud 9<span class="cp-footer-center">애플리케이션 클라우드 전환 계획</span></p>
+<p>© 2026 Cloud 9<span class="cp-footer-center">펫 클리닉 3계층 아키텍처 인프라 구축</span></p>
 </div>
 </div></div>
 
