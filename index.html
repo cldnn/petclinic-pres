@@ -103,7 +103,7 @@
     code span.vs { color: #032f62; } /* VerbatimString */
     code span.wa { color: #ff5555; } /* Warning */
   </style>
-  <link rel="stylesheet" href="libs/revealjs/dist/theme/quarto-a722945ba2930bbc03e1c7122fbf273d.css">
+  <link rel="stylesheet" href="libs/revealjs/dist/theme/quarto-ee061d64ec69ee25ef5700c1698ff07a.css">
   <link href="libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -251,7 +251,7 @@
 
 <section class="quarto-title-block center">
   <h1 class="title">펫 클리닉 3계층 아키텍처 인프라 구축</h1>
-  <p class="subtitle">NAT 게이트웨이 없는 AWS 3계층 구성과 절차서 기반 구축</p>
+  <p class="subtitle">AWS를 사용한 이중화 설계와 구축, 그리고 문서화</p>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -262,27 +262,27 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
             AI 서비스 운영을 위한 클라우드 데이터 엔지니어 과정 중간 프로젝트
           </p>
         <p class="quarto-title-affiliation">
-            프로젝트 기간: 2026. 9. 21. ~ 2026. 10. 14. (13일)
+            2026. 9. 21. ~ 2026. 10. 14. (13일)
           </p>
     </div>
 </div>
 
-  <p class="date">2026. 10. 14. (수)</p>
+  <p class="date">2026. 10. 14. (수) 발표</p>
 </section>
 <section class="slide level2">
 <h2>목차</h2>
 <ol type="1">
-<li>서비스 시나리오, 아키텍처, 팀과 작업 방식, 비용 결정 (김승환)</li>
-<li>작업 기반: VPC, 서브넷, 보안 그룹, 엔드포인트 (김태준)</li>
-<li>WAS: 호환성과 취약점 보완, Arm 기반 배포와 설정 외부화, 가용성과 자동 확장 (김건형)</li>
+<li>서비스 시나리오, 팀과 작업 방식, 비용 결정 (김승환)</li>
+<li>아키텍처와 작업 기반: VPC, 서브넷, 보안 그룹, 엔드포인트 (김태준)</li>
+<li>WAS: 호환성과 취약점 보완, ARM 기반 배포와 설정 외부화, 가용성 확보와 모니터링 (김건형)</li>
 <li>DB 서버: RDS MySQL과 RDS Proxy, DB 보안 구성과 데이터 적재 (우수빈)</li>
 <li>웹 서버와 CloudFront (양진현)</li>
 <li>부하 시험, 최종 결과물, 마무리 (김승환)</li>
-<li>시연 (김건형)</li>
+<li>시연 (김승환, 김건형)</li>
 </ol>
 <aside class="notes">
 <p>10초. 넘기면서 “구축한 순서대로 담당자가 직접 발표한다”고만 말한다.</p>
-<p>발표 10분 + 시연 5분 기준 초안. 시간 배분: 김승환 3분 15초(시나리오, 아키텍처, 팀과 작업 방식, 일정, 비용) → 김태준 1분 30초 → 김건형 1분 30초 → 우수빈 1분 30초 → 양진현 1분 30초 → 김승환 45초(시험, 결과물, 마무리) → 시연 5분 각 슬라이드의 노트(S 키)에 말할 거리와 시간을 적어 두었다. “초안” 표시가 있는 곳은 본인 경험이나 실제 결과로 바꿔야 한다.</p>
+<p>WAS 발표에서는 보안, 비용, 안정성과 운영 이유를 해당 작업과 함께 설명한다. 시간 배분: 김승환 2분 30초(시나리오, 팀과 작업 방식, 일정, 비용) → 김태준 2분(아키텍처, 작업 기반) → 김건형 1분 30초 → 우수빈 1분 30초 → 양진현 1분 30초 → 김승환 45초(시험, 결과물, 마무리) → 시연 5분 각 슬라이드의 노트(S 키)에 말할 거리와 시간을 적어 두었다. “초안” 표시가 있는 곳은 본인 경험이나 실제 결과로 바꿔야 한다.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -303,8 +303,8 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 <div class="fragment cp-point">
 <table class="caption-top">
 <colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
+<col style="width: 40%">
+<col style="width: 60%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -314,7 +314,7 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 </thead>
 <tbody>
 <tr class="odd">
-<td>서버 하나가 고장 나도 2분 안에 정상 서비스</td>
+<td>서버 하나가 고장 나도 5분 안에 정상 서비스</td>
 <td>AZ 두 곳에 분산, ALB 상태 확인으로 고장 서버 제외, Auto Scaling이 교체</td>
 </tr>
 <tr class="even">
@@ -322,26 +322,22 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 <td>임시로 다른 AZ 하나만 사용 (영역 이동)</td>
 </tr>
 <tr class="odd">
-<td>앱 업데이트 중에도 서비스 중단 없음</td>
-<td>새 AMI로 인스턴스 새로 고침, 신규 인스턴스를 먼저 기동한 뒤 교체</td>
+<td>동시 사용자 600명</td>
+<td>웹 <code>t4g.micro</code>, WAS <code>t4g.small</code>, DB <code>db.t4g.small</code>, k6로 확인</td>
 </tr>
 <tr class="even">
-<td>동시 사용자 600명</td>
-<td>인스턴스 사양 결정, k6 부하 시험으로 확인</td>
+<td>고객 정보 저장 시 암호화, 백업</td>
+<td>RDS for MySQL 8.4 저장 암호화, DB 구간 TLS, 자동 백업 7일</td>
 </tr>
 <tr class="odd">
-<td>고객 정보 저장 시 암호화, 백업</td>
-<td>RDS 저장 암호화, DB 구간 TLS, 자동 백업 7일</td>
-</tr>
-<tr class="even">
 <td>병원 양식의 오류 페이지</td>
 <td>CloudFront 사용자 지정 오류 응답과 S3</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Apache, Tomcat, OpenJDK 기반</td>
 <td>Apache 2.4, Tomcat 9, Amazon Corretto 8 (OpenJDK 배포판)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>사용자 규모 확대 (미확정)</td>
 <td>WAS 2~4대 자동 조정, AZ B와 D의 주소 대역 예약</td>
 </tr>
@@ -349,63 +345,7 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 </table>
 </div>
 <aside class="notes">
-<p>50초. 왼쪽 열(받은 요구)을 읽고, 오른쪽 열은 “뒤에서 담당자가 하나씩 설명한다”로 넘긴다. 2분 근거: WAS 대상은 상태 확인 2회 실패(약 40초)로 빠지고 남은 서버가 처리한다. DB 장애 조치는 보통 60~120초다. 질문이 나오면 이 두 숫자로 답한다. 앱을 만드는 프로젝트가 아니라 이미 있는 PetClinic을 운영할 인프라를 짓고 배우는 프로젝트라는 점도 한 문장 넣는다.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section class="slide level2 smaller-text">
-<h2>아키텍처</h2>
-<div class="columns">
-<div class="column" style="width:38%;">
-<div class="fragment cp-point">
-<p><img data-src="assets/architecture-v4.png" height="500"></p>
-</div>
-</div><div class="column" style="width:62%;">
-<p><span class="fragment cp-say">사용자 → CloudFront (+ WAF) → 외부 ALB → Apache → 내부 ALB → Tomcat → RDS Proxy → RDS MySQL</span></p>
-<div class="fragment cp-point">
-<table class="caption-top">
-<thead>
-<tr class="header">
-<th>계층</th>
-<th>구성</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>웹 서버</td>
-<td>Apache, <code>t4g.micro</code>, Auto Scaling 그룹</td>
-</tr>
-<tr class="even">
-<td>WAS</td>
-<td>Tomcat 9 + Java 8, <code>t4g.small</code>, 2~4대 자동 조정</td>
-</tr>
-<tr class="odd">
-<td>DB 서버</td>
-<td>MySQL 8.4 Multi-AZ, <code>db.t4g.small</code>, RDS Proxy</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="box" data-box-title="핵심 결정">
-<ul>
-<li><span class="fragment cp-say"><span class="hl">NAT 게이트웨이 없음</span>: AWS 서비스는 VPC 엔드포인트로, 서버 접속은 Session Manager로</span></li>
-<li><span class="fragment cp-say">서버는 모두 프라이빗 서브넷. 퍼블릭 서브넷에는 외부 ALB만</span></li>
-<li><span class="fragment cp-say">전 서버 Arm (Graviton) 인스턴스</span></li>
-</ul>
-</div>
-<p><span class="muted smallest-text fragment cp-say">그림은 가독성을 위해 EC2를 서브넷 안에 표현했다. 서브넷, 보안 그룹, IP 주소가 붙는 대상은 EC2의 네트워크 인터페이스다.</span></p>
-</div></div>
-<aside class="notes">
-<p>45초. 그림을 위에서 아래로 한 번 훑는다. 가로 배치 설계도가 완성되면 그림을 교체하고, 이 슬라이드는 그림을 위에 크게, 표와 핵심 결정을 아래에 두는 배치로 바꾼다. 요청이 CloudFront부터 DB까지 일곱 구간을 지난다는 것, 그리고 오른쪽 상자의 세 가지 결정만 강조한다. VPC 오리진을 쓰지 않은 이유(정액 요금제 Business 이상 필요)는 질문이 나오면 답한다.</p>
+<p>50초. 왼쪽 열(받은 요구)을 읽고, 오른쪽 열은 “뒤에서 담당자가 하나씩 설명한다”로 넘긴다. 5분 근거: WAS 대상은 상태 확인 2회 실패(약 40초)로 빠지고 남은 서버가 처리한다. DB 장애 조치는 보통 60~120초다. 질문이 나오면 이 두 숫자로 답한다. 앱을 만드는 프로젝트가 아니라 이미 있는 PetClinic을 운영할 인프라를 짓고 배우는 프로젝트라는 점도 한 문장 넣는다.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -421,8 +361,8 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 <section class="slide level2 smaller-text">
 <h2>팀 구성과 작업 방식</h2>
 <div class="columns">
-<div class="column" style="width:46%;">
-<div class="fragment cp-point">
+<div class="column" style="width:55%;">
+<div class="fragment cp-point key-col">
 <table class="caption-top">
 <thead>
 <tr class="header">
@@ -434,7 +374,7 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 <tbody>
 <tr class="odd">
 <td>김태준 (팀장)</td>
-<td>작업 기반</td>
+<td>작업 기반, IAM</td>
 <td>PM</td>
 </tr>
 <tr class="even">
@@ -444,7 +384,7 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 </tr>
 <tr class="odd">
 <td>김승환</td>
-<td>PM</td>
+<td>PM, 시나리오, 비용 추산, 부하 시험</td>
 <td>웹 서버</td>
 </tr>
 <tr class="even">
@@ -461,18 +401,15 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 </table>
 </div>
 <p><span class="smallest-text fragment cp-say">발표는 주 담당 영역을 맡는다. <strong>교차 수행</strong> 검토로 모두가 한 번씩은 절차서에 따라 인프라를 구축해 보았다.</span></p>
-</div><div class="column" style="width:4%;">
+</div><div class="column" style="width:1%;">
 
-</div><div class="column" style="width:50%;">
+</div><div class="column" style="width:44%;">
 <p><strong>개발용 VPC에서 검증하고 운영용 VPC에 적용</strong></p>
 <ul>
-<li><span class="fragment cp-say"><strong>개발용 VPC 구축</strong>: 공용(<code>pet-shared-</code>) 자원과 개발용 자원으로 먼저 생성한다.</span></li>
+<li><span class="fragment cp-say"><strong>개발용 VPC 구축</strong>: 공용(<code>pet-shared-</code>) 자원과 개발용(<code>pet-dev-</code>) 자원으로 먼저 생성한다.</span></li>
 <li><span class="fragment cp-say"><strong>테스트와 검증</strong>: 동작과 근거를 확인한 결정만 남긴다.</span></li>
-<li><span class="fragment cp-say"><strong>운영용 VPC 적용</strong>: 운영용(<code>pet-prod-</code>) 자원을 절차서대로 생성한다.</span></li>
+<li><span class="fragment cp-say"><strong>운영용 VPC 적용</strong>: 운영용(<code>pet-prod-</code>) 자원을 <a href="https://github.com/cldnn/petclinic-infra/wiki">절차서</a>대로 생성한다.</span></li>
 </ul>
-<div class="box blue fragment cp-say" data-box-title="절차서 10편 + 부록 2편">
-<p>목적 → 선행 조건 → 절차 → 유의 사항. 모든 단계가 <strong>기대 결과</strong>로 완료되어서, 누가 수행해도 동일한 결과가 나오는지 검증이 가능하다.</p>
-</div>
 </div></div>
 <aside class="notes">
 <p>35초. 강조할 것은 두 가지다. 검증하고 나서 운영에 적용했다는 것(검증 기반 의사결정), 그리고 절차서와 교차 수행으로 구축을 표준화하고 재현할 수 있게 했다는 것. 교차 수행용 IAM 역할(pet-shared-sec-role-review)을 따로 만들어 서로의 작업을 검토했다.</p>
@@ -491,8 +428,8 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 <section class="slide level2 smaller-text">
 <h2>일정과 도구</h2>
 <div class="columns">
-<div class="column" style="width:56%;">
-<div class="fragment cp-point">
+<div class="column" style="width:55%;">
+<div class="fragment cp-point key-col">
 <table class="caption-top">
 <thead>
 <tr class="header">
@@ -526,8 +463,8 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 </div>
 </div><div class="column" style="width:4%;">
 
-</div><div class="column" style="width:40%;">
-<div class="fragment cp-point">
+</div><div class="column" style="width:41%;">
+<div class="fragment cp-point key-col">
 <table class="caption-top">
 <thead>
 <tr class="header">
@@ -537,20 +474,24 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 </thead>
 <tbody>
 <tr class="odd">
-<td>인프라 관리</td>
+<td>인프라 구축</td>
 <td>AWS 콘솔, CloudShell, Systems Manager</td>
 </tr>
 <tr class="even">
-<td>개발과 실행</td>
+<td>로컬 개발</td>
 <td>IntelliJ IDEA, JDK, Tomcat, MySQL</td>
 </tr>
 <tr class="odd">
-<td>협업</td>
-<td>Jira, Notion, GitHub</td>
+<td>부하 시험</td>
+<td>k6</td>
 </tr>
 <tr class="even">
-<td>시험과 문서화</td>
-<td>k6, Quarto</td>
+<td>협업</td>
+<td>Jira, GitHub</td>
+</tr>
+<tr class="odd">
+<td>문서화와 발표</td>
+<td>Notion, GitHub Wiki, Quarto</td>
 </tr>
 </tbody>
 </table>
@@ -647,25 +588,110 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
-</section>
-<section>
-<section class="title-slide slide level1 section-slide center" data-background-color="#0b2545">
-<h1>작업 기반</h1>
+<!--
+  아키텍처와 작업 기반 (김태준). 대본은 각 슬라이드의 노트(S 키)에 수록한다.
 
+  이 파일의 슬라이드는 fragment-index로 순서를 직접 매긴다. 한 슬라이드에서
+  번호를 하나라도 지정하면 번호 없는 항목은 맨 뒤로 밀리므로, 항목을 추가하면
+  번호도 동시에 부여한다. 동일한 번호는 동시에 전환된다(문장이 밝아지는 순간
+  그림의 적색 상자가 같이 켜진다).
+
+  그림 위 적색 상자(.cp-mark)는 그 번호 차례에만 보이고 다음 차례에 사라진다.
+  위치와 크기는 그림 크기에 대한 백분율이고, 대상의 경계에 딱 맞춘다. 여백은
+  CSS가 사방에 같은 폭으로 둔다. 그림을 교체하면 left, top, width, height만
+  고친다. PDF와 Shift+E 화면에는 나오지 않는다.
+-->
 </section>
 <section class="slide level2 smaller-text">
-<h2>VPC와 서브넷 설계</h2>
+<h2>아키텍처: 사용자 요청 경로</h2>
 <div class="columns">
-<div class="column" style="width:55%;">
+<div class="column" style="width:52%;">
+<div class="cp-figure">
+<p><img data-src="assets/architecture-edge.png" height="545"></p>
+<span class="cp-mark fragment fade-in-then-out" data-fragment-index="1" style="left:22.9%; top:14.5%; width:14.85%; height:46.9%;"></span>
+<span class="cp-mark fragment fade-in-then-out" data-fragment-index="2" style="left:48.4%; top:33.3%; width:41.35%; height:18%;"></span>
+<span class="cp-mark fragment fade-in-then-out" data-fragment-index="3" style="left:48.4%; top:53.7%; width:45.1%; height:22.5%;"></span>
+<span class="cp-mark fragment fade-in-then-out" data-fragment-index="4" style="left:76.35%; top:8.7%; width:15.15%; height:22.4%;"></span>
+</div>
+</div><div class="column" style="width:48%;">
+<ul>
+<li><span class="fragment cp-say" data-fragment-index="1"><strong>CloudFront와 WAF</strong>: 사용자 요청을 HTTPS로 받고, WAF가 IP마다 요청 수를 제한한다.</span></li>
+<li><span class="fragment cp-say" data-fragment-index="2"><strong>① 캐시 미스</strong>: 캐싱을 비활성화했다. 정적 메인 페이지를 포함한 모든 요청이 VPC의 외부 ALB로 전달된다.</span></li>
+<li><span class="fragment cp-say" data-fragment-index="3"><strong>② 오류</strong>: 오리진이 403, 404, 5xx를 반환하면 S3의 병원 양식 오류 페이지로 응답한다.</span></li>
+<li><span class="fragment cp-say" data-fragment-index="4"><strong>패키지 버킷 (요청 경로 외)</strong>: <code>dnf</code> 명령으로 내려받지 못하는 패키지를 수동으로 설치하려고 할 때 S3 게이트웨이 엔드포인트를 사용한다.</span></li>
+</ul>
+</div></div>
+<aside class="notes">
+<p>30초.</p>
+<ol type="1">
+<li><p>아키텍처와 작업 기반을 설명할 김태준입니다. 먼저 팀이 결정한 전체 아키텍처입니다. 사용자 요청은 HTTPS로 CloudFront에 도착하고 CloudFront와 연동된 방화벽이 출발지 IP 주소를 기준으로 일정 시간 동안 요청 수를 카운팅해서 임계치를 초과하면 차단하거나 기록을 남기는 구조입니다.</p></li>
+<li><p>1번은 차단되지 않은 모든 정상 요청이 캐시 미스로 처리되어 VPC 안으로 전달되는 경로를 나타냅니다. 펫 클리닉 페이지는 대부분 동적 페이지여서 캐싱을 하지는 않았습니다.</p></li>
+<li><p>2번은 요청이 차단되거나 VPC 내 서버가 오류를 반환하면 S3에 넣어 둔 특정한 양식의 정적 오류 페이지에 접근하는 경로를 나타냅니다. 물론 이미 캐싱이 된 상태라면 S3에 접근하지 않아도 됩니다.</p></li>
+<li><p>화살표로 이어지지 않은 패키지 버킷도 설명하겠습니다. 이 버킷은 패키지를 수동으로 설치하려고 할 때 사용할 용도로 둔 것이며 사용자 요청 경로와는 무관하지만 VPC에서 접근하기 때문에 이 슬라이드에 포함했습니다. 서버는 S3 게이트웨이 엔드포인트로 이 버킷에 접근합니다.</p></li>
+</ol>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section class="slide level2 smaller-text">
+<h2>아키텍처: VPC 내부 구성</h2>
+<div class="cp-figure">
+<p><img data-src="assets/architecture-vpc.png" height="580"></p>
+<span class="cp-mark fragment fade-in-then-out" data-fragment-index="1" style="left:3.5%; top:10.15%; width:93.85%; height:28.2%;"></span>
+<span class="cp-mark fragment fade-in-then-out" data-fragment-index="1" style="left:3.5%; top:54.1%; width:93.85%; height:28.1%;"></span>
+<span class="cp-mark fragment fade-in-then-out" data-fragment-index="2" style="left:0.6%; top:16.7%; width:16.75%; height:58.9%;"></span>
+<span class="cp-mark fragment fade-in-then-out" data-fragment-index="3" style="left:18.3%; top:16.7%; width:38.2%; height:58.9%;"></span>
+<span class="cp-mark fragment fade-in-then-out" data-fragment-index="4" style="left:57.6%; top:16.7%; width:25.05%; height:58.9%;"></span>
+<span class="cp-mark fragment fade-in-then-out" data-fragment-index="5" style="left:83.75%; top:16.7%; width:12%; height:58.9%;"></span>
+</div>
+<aside class="notes">
+<p>30초.</p>
+<ol type="1">
+<li><p>VPC 구성은 이렇습니다. AZ A와 AZ C에 동일한 구성을 두었습니다.</p></li>
+<li><p>CloudFront에서 접근할 인터넷 게이트웨이가 있으며 퍼블릭 서브넷에는 외부 ALB만 둡니다.</p></li>
+<li><p>웹 서버와 WAS는 프라이빗 서브넷의 Auto Scaling 그룹으로 운영하고, 그 사이를 내부 ALB가 연결합니다.</p></li>
+<li><p>WAS는 RDS Proxy를 거쳐 Primary DB에 접속합니다. Primary DB에 데이터가 기록되면 Standby DB로 동기 복제됩니다. Standby DB는 평소에는 요청을 받지 않고, Primary DB에 장애가 발생하면 Standby DB가 승격되어 요청을 받습니다.</p></li>
+<li><p>NAT 게이트웨이가 없으므로, 서버가 호출하는 AWS 서비스는 VPC 엔드포인트로 연결합니다. 물론 S3 접근 시 사용하는 게이트웨이 엔드포인트는 라우팅 테이블 항목으로 존재하므로 이 서브넷과 무관합니다.</p></li>
+</ol>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section class="slide level2 smaller-text">
+<h2>작업 기반: VPC와 서브넷 설계</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
 <p><strong>VPC <code>10.9.0.0/22</code>, 서브넷 14개</strong></p>
-<div class="fragment cp-point">
+<div class="fragment cp-point" data-fragment-index="1">
 <table class="caption-top">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
 <thead>
 <tr class="header">
 <th>용도</th>
 <th>AZ A</th>
 <th>AZ C</th>
-<th>크기 이유</th>
+<th>AWS 요구 사항</th>
 </tr>
 </thead>
 <tbody>
@@ -673,34 +699,34 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 <td>외부 ALB</td>
 <td>.0.0/27</td>
 <td>.0.64/27</td>
-<td>ALB는 /27 이상</td>
+<td><span class="fragment cp-point" data-fragment-index="2">최소 /27 크기 등</span></td>
 </tr>
 <tr class="even">
-<td>웹</td>
+<td>웹 서버</td>
 <td>.0.128/28</td>
 <td>.0.160/28</td>
-<td>인스턴스만</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td>내부 ALB</td>
 <td>.1.0/27</td>
 <td>.1.64/27</td>
-<td>ALB는 /27 이상</td>
+<td><span class="fragment cp-point" data-fragment-index="2">최소 /27 크기 등</span></td>
 </tr>
 <tr class="even">
 <td>WAS</td>
 <td>.1.128/28</td>
 <td>.1.160/28</td>
-<td>인스턴스만</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td>RDS Proxy</td>
 <td>.2.0/27</td>
 <td>.2.64/27</td>
-<td>여유 IP 10개 필요</td>
+<td><span class="fragment cp-point" data-fragment-index="2">여유 IP 주소 최소 10개</span></td>
 </tr>
 <tr class="even">
-<td>DB</td>
+<td>RDS</td>
 <td>.2.128/28</td>
 <td>.2.160/28</td>
 <td></td>
@@ -714,16 +740,25 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 </tbody>
 </table>
 </div>
-</div><div class="column" style="width:45%;">
+</div><div class="column" style="width:40%;">
 <ul>
-<li><span class="fragment cp-say">AZ B, D 자리를 <strong>예약해</strong> 향후 AZ 확장이 가능하다.</span></li>
-<li><span class="fragment cp-say">라우팅 테이블은 3개: 퍼블릭(인터넷 게이트웨이), 프라이빗, 엔드포인트</span></li>
-<li><span class="fragment cp-say">서브넷마다 AWS가 주소 5개를 예약 → /28은 11개, /27은 27개만 사용 가능</span></li>
-<li><span class="fragment cp-say">Docker, EKS 기본 대역과 가정용 공유기 대역을 회피했다.</span></li>
+<li><span class="fragment cp-say" data-fragment-index="3">서브넷마다 AWS가 주소 5개를 예약 → /28은 11개, /27은 27개만 사용 가능</span></li>
+<li><span class="fragment cp-say" data-fragment-index="4">AZ B, D 자리를 <strong>예약해</strong> 향후 AZ 확장이 가능하다.</span></li>
+<li><span class="fragment cp-say" data-fragment-index="5">라우팅 테이블은 3개: 퍼블릭(인터넷 게이트웨이), 프라이빗, 엔드포인트</span></li>
+<li><span class="fragment cp-say" data-fragment-index="6">사설 IP 대역 중 충돌 위험이 있는 대역은 회피했다.</span></li>
 </ul>
 </div></div>
 <aside class="notes">
-<p>45초. 서브넷 크기를 ’서비스가 요구하는 최소 여유 IP’로 정했다는 것이 핵심. ALB는 /27 이상에 여유 8개, RDS Proxy는 db.*.xlarge 이하에서 여유 10개.</p>
+<p>25초.</p>
+<ol type="1">
+<li><p>이 구성을 위해 VPC 10.9.0.0/22를 서브넷 14개로 나누었습니다.</p></li>
+<li><p>서브넷 크기는 서비스가 요구하는 여유 IP로 정했습니다. ALB와 RDS Proxy는 여유 IP가 필요해 /27로, 인스턴스만 배치하는 서브넷은 /28로 두었습니다.</p></li>
+<li><p>AWS가 서브넷마다 주소 5개를 예약하므로, /28이면 11개만 사용 가능합니다.</p></li>
+<li><p>AZ B와 D 대역은 예약해 두어 향후 AZ 확장이 가능합니다.</p></li>
+<li><p>라우팅 테이블은 퍼블릭, 프라이빗, 엔드포인트 세 개입니다.</p></li>
+<li><p>사설 IP 대역 중 충돌 위험이 있는 대역은 회피했습니다.</p></li>
+</ol>
+<p>질문 대비: ALB는 /27 이상에 여유 IP 8개, RDS Proxy는 db.*.xlarge 이하에서 여유 IP 10개가 필요하다. 회피한 대역(설계 기준 문서): EKS 기본 서비스 대역 172.20.0.0/16, 10.100.0.0/16, Docker 기본 브리지 172.17.0.0/16, 가정용 공유기에서 흔한 192.168.0.0/24, 192.168.1.0/24, 10.0.0.0/24 등.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -737,8 +772,8 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
       }</style></aside>
 </section>
 <section class="slide level2 smaller-text">
-<h2>보안 그룹 사슬과 관리 접속</h2>
-<div class="fragment cp-point">
+<h2>작업 기반: 보안 그룹 사슬과 관리 접속</h2>
+<div class="fragment cp-point" data-fragment-index="1">
 <div class="cp-chain">
   <span class="node">CloudFront<small>접두사 목록</small></span>
   <span class="edge">80</span>
@@ -747,28 +782,37 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
   <span class="node">웹 서버</span>
   <span class="edge">80</span>
   <span class="node">내부 ALB</span>
-  <span class="edge">8080</span>
+  <span class="edge fragment cp-point" data-fragment-index="3">8080</span>
   <span class="node">WAS</span>
-  <span class="edge">3306</span>
+  <span class="edge fragment cp-point" data-fragment-index="3">3306</span>
   <span class="node">RDS Proxy</span>
-  <span class="edge">3306</span>
+  <span class="edge fragment cp-point" data-fragment-index="3">3306</span>
   <span class="node">RDS</span>
   <span class="drop" style="grid-column: 5; grid-row: 2;"><span>443</span></span>
   <span class="drop" style="grid-column: 9; grid-row: 2;"><span>443</span></span>
   <span class="node vpce" style="grid-column: 5 / 10; grid-row: 3;">VPC 엔드포인트<small>ssm, ssmmessages, secretsmanager, monitoring</small></span>
+  <span class="area fragment cp-point" data-fragment-index="2" style="grid-column: 1 / 3; grid-row: 1 / 2;"></span>
+  <span class="area fragment cp-point" data-fragment-index="4" style="grid-column: 5 / 10; grid-row: 2 / 4; left: -0.3em; right: -0.3em;"></span>
 </div>
 </div>
 <ul>
-<li><span class="fragment cp-say">각 계층은 <strong>바로 앞 계층의 보안 그룹</strong>만 출처로 허용한다.</span></li>
-<li><span class="fragment cp-say">SSH 포트를 열지 않고 Session Manager로 접속한다. SSM Agent가 엔드포인트로 먼저 연결한다.</span></li>
-<li><span class="fragment cp-say">패키지는 S3 게이트웨이 엔드포인트로 받는다(Amazon Linux 저장소, 팀 패키지 버킷).</span></li>
+<li><span class="fragment cp-say" data-fragment-index="1">각 계층은 <strong>바로 앞 계층의 보안 그룹</strong>만 출처로 허용한다.</span></li>
+<li><span class="fragment cp-say" data-fragment-index="5">SSH 포트를 열지 않고 Session Manager로 접속한다. SSM Agent가 엔드포인트로 먼저 연결한다.</span></li>
+<li><span class="fragment cp-say" data-fragment-index="6">패키지는 S3 게이트웨이 엔드포인트로 받는다(Amazon Linux 저장소, 팀 패키지 버킷).</span></li>
 </ul>
-<!-- 교체 필요: 배운 점은 임시 문장이다. 담당자 본인의 말로 바꾼다. -->
-<div class="box amber fragment cp-say" data-box-title="배운 점">
-<p>NAT 게이트웨이를 제외하면 서버가 호출하는 AWS 서비스마다 엔드포인트와 정책이 필요하다. 하나라도 누락되면 해당 기능만 오류 표시 없이 중단된다.</p>
-</div>
 <aside class="notes">
-<p>45초. 화살표를 왼쪽부터 따라가며 “출처가 IP가 아니라 앞 계층의 보안 그룹”이라고 말한다. IAM 그룹 6개와 EC2 역할도 이 파트에서 만들었다는 것을 한 문장으로 덧붙인다.</p>
+<p>40초.</p>
+<ol type="1">
+<li><p>다음은 이 서브넷에 배치한 자원 사이의 통신 규칙입니다. 보안 그룹은 각 계층이 바로 앞 계층의 보안 그룹만 출처로 허용하는 사슬 구조입니다.</p></li>
+<li><p>외부 ALB는 CloudFront 관리형 접두사 목록에서 오는 80번 포트만 허용합니다. ALB에 인증서가 없어서, CloudFront에서 외부 ALB를 거쳐 WAS까지는 평문 HTTP로 전송됩니다.</p></li>
+<li><p>WAS는 8080, RDS Proxy와 DB는 3306 포트만 엽니다.</p></li>
+<li><p>웹 서버와 WAS는 443 포트로 VPC 엔드포인트에 접속합니다.</p></li>
+<li><p>SSH 포트는 열지 않고 Session Manager로 접속하며, SSM Agent가 엔드포인트로 먼저 연결합니다.</p></li>
+<li><p>패키지는 S3 게이트웨이 엔드포인트로 받습니다.</p></li>
+<li><p>NAT 게이트웨이를 제외하면 엔드포인트가 하나만 누락되어도 해당 기능이 오류 표시 없이 중단된다는 것을 배웠습니다.</p></li>
+</ol>
+<p>(넘기며) 이렇게 준비한 네트워크 위에서 실제 애플리케이션을 실행하는 WAS는 김건형 님이 이어서 설명하겠습니다.</p>
+<p>질문 대비: CloudFront와 오류 페이지 S3 버킷 사이는 보안 그룹이 아니라 OAC와 버킷 정책으로 제한한다.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -780,37 +824,31 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
-</section></section>
-<section>
-<section class="title-slide slide level1 section-slide center" data-background-color="#0b2545">
-<h1>WAS</h1>
-<!--
-  항목은 적힌 순서대로(왼쪽 단, 오른쪽 단) 한 번 넘길 때마다 하나씩 흐린 상태에서
-  제 밝기로 바뀐다. 문장을 [ ]{.fragment .cp-say}로 감싸면 된다.
--->
 </section>
 <section class="slide level2 smaller-text">
-<h2>호환성 검토와 프레임워크 취약점 보완</h2>
+<h2>WAS: 호환성 검토와 취약점 보완</h2>
+<p><span class="tag">보안</span></p>
 <div class="columns">
 <div class="column" style="width:50%;">
 <p><strong>버전 호환성</strong></p>
 <ul>
-<li><span class="fragment cp-say">기존 Java 8, javax 기반 소스와의 호환성을 고려해 <span class="hl">Tomcat 9.0.122, Spring Framework 5.3.39</span> 적용</span></li>
-<li><span class="fragment cp-say">Spring BOM으로 Spring 모듈 버전 통일</span></li>
-<li><span class="fragment cp-say">Java 패키지 버전 고정으로 검증되지 않은 업데이트 방지</span></li>
+<li><span class="fragment cp-say">기존 소스와의 호환성을 위해 <span class="hl">빌드와 운영 환경을 Java 8로 통일</span></span></li>
+<li><span class="fragment cp-say">Tomcat <strong>9.0.53 → 9.0.122</strong>, Spring Framework <strong>5.3.9 → 5.3.39</strong> 업데이트</span></li>
+<li><span class="fragment cp-say">Spring BOM으로 모듈 버전 통일</span></li>
 </ul>
 </div><div class="column" style="width:50%;">
 <p><strong>취약점 보완</strong></p>
 <ul>
-<li><span class="fragment cp-say">업데이트 후에도 잔존하는 프레임워크 취약점의 실제 사용 조건 확인</span></li>
-<li><span class="fragment cp-say">CVE-2024-38820과 관련된 DataBinder 차단 목록 설정을 <strong>입력 허용 목록</strong> 방식으로 변경</span></li>
-<li><span class="fragment cp-say">추가로 확인한 hidden ID 변조 문제에 URL의 <code>petId</code> 사용, <strong>보호자와 반려동물 관계 검증</strong> 적용</span></li>
-<li><span class="fragment cp-say">수정 후 전체 테스트 통과, WAR 빌드 확인</span></li>
+<li><span class="fragment cp-say">Spring 5.3.39에도 해당하는 <a href="https://spring.io/security/cve-2024-38820/">DataBinder 취약점</a>에 대응해 <span class="hl">입력 허용 필드 제한</span></span></li>
+<li><span class="fragment cp-say">다른 보호자의 반려동물 정보가 수정되지 않도록 <span class="hl">보호자 관계 검증</span></span></li>
+<li><span class="fragment cp-say">변경한 기능을 테스트로 검증한 뒤 WAR 파일 빌드</span></li>
 </ul>
 </div></div>
 <aside class="notes">
-<p>저는 기존 Petclinic을 AWS 3티어 환경에서 운영하기 위한 WAS 구축과 배포를 담당했습니다.</p>
-<p>먼저 기존 소스와의 호환성을 고려해 Java 8, Tomcat 9, Spring Framework 5.3.39를 적용했습니다. 의존성 버전을 통일하고, 프레임워크 취약점과 잘못된 반려동물 정보가 수정되는 문제도 보완했습니다.</p>
+<p>기존 Petclinic 서비스의 WAS 구축과 배포를 담당한 김건형입니다.</p>
+<p>먼저 기존 소스를 실행할 수 있도록 빌드와 운영 환경을 Java 8로 맞췄습니다. Tomcat과 Spring은 화면에 보이는 버전으로 업데이트했습니다.</p>
+<p>보안 문제도 함께 살폈습니다. Spring의 DataBinder 취약점에 대응해 입력할 수 있는 항목을 제한했고, 다른 보호자의 반려동물 정보가 수정되지 않도록 검증을 추가했습니다. 수정한 기능이 정상적으로 동작하는지 테스트한 뒤 WAR 파일을 빌드했습니다.</p>
+<p>[질문 대응] Spring 5.3.39도 CVE-2024-38820의 영향 범위에 포함됩니다. 입력 필드 제한은 애플리케이션 차원의 대응입니다. Spring 5.3 계열의 공식 수정 버전은 5.3.41입니다. https://spring.io/security/cve-2024-38820/</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -824,30 +862,30 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
       }</style></aside>
 </section>
 <section class="slide level2 smaller-text">
-<h2>Arm 기반 배포와 설정 외부화</h2>
+<h2>WAS: ARM 기반 배포와 설정 외부화</h2>
+<p><span class="tag">비용 최적화</span></p>
 <div class="columns">
-<div class="column" style="width:46%;">
-<p><strong>Arm 기반 배포</strong></p>
+<div class="column" style="width:50%;">
+<p><strong>ARM 기반 배포</strong></p>
 <ul>
-<li><span class="fragment cp-say">Amazon Linux 2023, <span class="hl">Graviton 기반 <code>t4g.small</code></span> 적용</span></li>
-<li><span class="fragment cp-say"><strong>SSM</strong>을 통한 WAR 전송과 Tomcat 배포</span></li>
-<li><span class="fragment cp-say"><strong>systemd</strong>를 통한 부팅 시 자동 시작과 서비스 관리</span></li>
-<li><span class="fragment cp-say">Arm 환경에서 Java, Tomcat 기동과 PetClinic, DB 연동 확인</span></li>
+<li><span class="fragment cp-say">AWS 환경에서 관리하기 편한 Amazon Linux 2023 선택</span></li>
+<li><span class="fragment cp-say">비용을 고려해 <span class="hl">Graviton 기반 t4g.small</span> 사용</span></li>
+<li><span class="fragment cp-say">ARM에 맞는 Java 8을 설치하고 Tomcat 실행과 DB 연결 확인</span></li>
+<li><span class="fragment cp-say">SSM으로 WAR 파일 전송 및 배포</span></li>
+<li><span class="fragment cp-say">새 EC2에서도 Tomcat이 자동으로 시작되도록 설정하고 AMI와 시작 템플릿에 반영</span></li>
 </ul>
-</div><div class="column" style="width:4%;">
-
 </div><div class="column" style="width:50%;">
 <p><strong>설정 외부화</strong></p>
 <ul>
-<li><span class="fragment cp-say">Tomcat의 <code>setenv.sh</code>에서 Parameter Store의 DB 접속 주소와 Secret ARN 조회</span></li>
-<li><span class="fragment cp-say">조회한 설정을 Java 시스템 속성으로 PetClinic에 전달</span></li>
-<li><span class="fragment cp-say">Secrets Manager JDBC 드라이버를 통한 DB 자격 증명 조회</span></li>
-<li><span class="fragment cp-say">DB 접속 설정 변경 시 <span class="hl">WAR 재빌드 없이 Tomcat 재시작으로 반영</span></span></li>
+<li><span class="fragment cp-say">DB 접속 설정은 Parameter Store에서 조회</span></li>
+<li><span class="fragment cp-say">DB 계정 정보는 Secrets Manager JDBC 드라이버로 조회</span></li>
+<li><span class="fragment cp-say">접속 설정 변경 시 <span class="hl">WAR 재빌드나 재배포 없이 Tomcat 재시작</span>으로 반영</span></li>
 </ul>
 </div></div>
 <aside class="notes">
-<p>배포 환경은 비용 효율을 고려해 Amazon Linux 2023과 ARM 기반 t4g.small을 선택했습니다. SSM으로 WAR 파일을 전송하고, systemd를 통해 EC2 부팅 시 Tomcat이 자동으로 시작되도록 구성했습니다.</p>
-<p>또한 DB 접속 설정을 소스에서 분리했습니다. Tomcat 시작 시 setenv.sh에서 Parameter Store의 설정을 읽고, Secrets Manager JDBC 드라이버로 DB 자격증명을 조회하도록 연동했습니다.</p>
+<p>서버 운영체제는 AWS 환경에서 관리하기 편한 Amazon Linux 2023을 선택했습니다. 인스턴스는 비용을 고려해 Graviton 기반 t4g.small을 사용했습니다. ARM에 맞는 Java 8을 설치한 뒤 Tomcat이 실행되고 DB에 연결되는지 확인했습니다.</p>
+<p>DB 접속 정보는 소스에서 분리했습니다. 접속 설정은 Parameter Store에서, 계정 정보는 Secrets Manager에서 가져옵니다. 그래서 접속 설정이 변경돼도 WAR를 다시 빌드하거나 배포할 필요 없이 Tomcat을 재시작해 반영할 수 있습니다.</p>
+<p>새 EC2가 생성됐을 때도 서비스가 실행되도록 Tomcat 자동 시작을 설정하고, 이 환경을 AMI와 시작 템플릿에 반영했습니다.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -861,30 +899,27 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
       }</style></aside>
 </section>
 <section class="slide level2 smaller-text">
-<h2>가용성 확보와 자동 확장</h2>
+<h2>WAS: 가용성 확보와 모니터링</h2>
+<p><span class="tag">안정성과 운영</span></p>
 <div class="columns">
-<div class="column" style="width:46%;">
-<p><strong>가용성과 자동 확장</strong></p>
+<div class="column" style="width:50%;">
+<p><strong>분산 배치와 자동 확장</strong></p>
 <ul>
-<li><span class="fragment cp-say">2a, 2c 가용 영역에 WAS <strong>분산 배치</strong></span></li>
-<li><span class="fragment cp-say">내부 ALB를 통한 요청 분산과 상태 확인</span></li>
-<li><span class="fragment cp-say">AMI와 시작 템플릿 기반 ASG, <span class="hl">CPU 기준 자동 확장</span> 구성</span></li>
+<li><span class="fragment cp-say">WAS를 <span class="hl">2a와 2c에 한 대씩 배치</span></span></li>
+<li><span class="fragment cp-say">Internal ALB로 요청 분산 및 헬스 체크</span></li>
+<li><span class="fragment cp-say">ASG에 CPU 기준 자동 확장 정책 설정</span></li>
 </ul>
-</div><div class="column" style="width:4%;">
-
 </div><div class="column" style="width:50%;">
 <p><strong>모니터링과 알림</strong></p>
 <ul>
-<li><span class="fragment cp-say">EC2 CPU와 ALB 응답 시간, 요청량, 오류, 정상 대상 수 확인</span></li>
-<li><span class="fragment cp-say">CloudWatch 에이전트로 메모리 사용률 수집</span></li>
-<li><span class="fragment cp-say"><span class="hl"><code>HealthyHostCount</code>가 2 미만이면</span> CloudWatch 경보와 SNS 이메일 알림</span></li>
-<li><span class="fragment cp-say"><code>whoami.jsp</code>에서 AWS API로 조회한 <strong>대상 그룹 상태와 현재 요청 경로</strong> 시각화</span></li>
+<li><span class="fragment cp-say">CloudWatch Agent로 메모리 사용률 수집</span></li>
+<li><span class="fragment cp-say">정상 WAS가 <span class="hl">두 대 미만</span>이면 CloudWatch 경보와 SNS 이메일 알림</span></li>
+<li><span class="fragment cp-say">요청 경로와 응답 WAS, 타겟그룹 상태를 보여주는 대시보드 구현</span></li>
 </ul>
 </div></div>
 <aside class="notes">
-<p>가용성을 위해 2a와 2c에 WAS를 분산 배치하고, Internal ALB를 통해 요청을 분산했습니다. 구성한 서버를 AMI와 시작 템플릿으로 만들어 CPU 부하에 따라 ASG가 자동으로 확장되도록 했습니다.</p>
-<p>운영 상태는 EC2 CPU와 ALB 지표로 확인하고, CloudWatch Agent로 메모리 사용률을 추가 수집했습니다. 정상 WAS가 한 대 이하로 줄어들면 CloudWatch 경보와 SNS 이메일 알림을 받도록 구성했습니다.</p>
-<p>마지막으로 ALB의 요청 분산과 타겟그룹 상태를 한눈에 볼 수 있는 검증 페이지를 직접 구성했습니다. 현재 응답한 서버와 각 대상의 상태를 표시해, 부하 분산과 자동 확장 결과를 시각적으로 확인했습니다.</p>
+<p>WAS는 2a와 2c에 한 대씩 배치했습니다. Internal ALB가 두 서버에 요청을 나눠 보내고, ASG는 CPU 사용률에 따라 서버 수를 조절하도록 설정했습니다.</p>
+<p>운영 중에는 메모리 사용률을 확인하고, 정상 WAS가 두 대 미만으로 줄어들면 이메일을 받도록 했습니다. 또 요청이 어느 WAS로 전달됐는지와 타겟그룹 상태를 볼 수 있는 대시보드를 만들었습니다.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -896,10 +931,6 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
-</section></section>
-<section>
-<section class="title-slide slide level1 section-slide center" data-background-color="#0b2545">
-<h1>DB 서버</h1>
 <!--
   항목은 적힌 순서대로(왼쪽 단, 오른쪽 단) 한 번 넘길 때마다 하나씩 흐린 상태에서
   제 밝기로 바뀐다. 문장을 [ ]{.fragment .cp-say}로 감싸면 된다.
@@ -907,7 +938,7 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 -->
 </section>
 <section class="slide level2 smaller-text">
-<h2>RDS MySQL과 RDS Proxy</h2>
+<h2>DB 서버: RDS MySQL과 RDS Proxy</h2>
 <div class="lead fragment cp-say">
 <p>안정적인 DB 운영을 위해 <strong>가용성과 연결 안정성</strong>을 중점적으로 고려했다.</p>
 </div>
@@ -919,7 +950,8 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 <li><span class="fragment cp-say"><strong>MySQL 8.4 LTS</strong>: 장기 지원과 유지보수 고려</span></li>
 <li><span class="fragment cp-say"><strong>인스턴스</strong>: <span class="hl"><code>db.t4g.small</code></span> / gp3 20 GiB</span>
 <ul>
-<li><span class="fragment cp-say">사전 부하 테스트 연결 사용률: micro 93%, small 56%</span></li>
+<li><span class="fragment cp-say">연결 사용률: micro 93% / small 56%</span></li>
+<li><span class="fragment cp-say">최소 가용 메모리: micro 91 / small 555 MiB</span></li>
 </ul></li>
 <li><span class="fragment cp-say"><strong>데이터 보호</strong>: 자동 백업 7일 / KMS 스토리지 암호화</span></li>
 </ul>
@@ -930,17 +962,20 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 <ul>
 <li><span class="fragment cp-say"><strong>연결 경로</strong>: WAS → RDS Proxy → RDS</span></li>
 <li><span class="fragment cp-say"><strong>연결 풀링과 재사용</strong>: WAS 확장 시 DB 연결 증가 대응</span></li>
-<li><span class="fragment cp-say"><strong>장애 대응</strong>: <span class="hl">Multi-AZ 장애 조치 시 DB 연결 복구 지원</span></span></li>
+<li><span class="fragment cp-say"><strong>장애 대응</strong>: <span class="hl">Multi-AZ 장애 조치 시 DB 연결 복구 지원</span></span>
+<ul>
+<li><span class="fragment cp-say">DB 쿼리 복구 시간: 135초 → 13초</span></li>
+</ul></li>
 <li><span class="fragment cp-say"><strong>TLS 필수</strong>: DB 인증 정보와 전송 데이터 보호</span></li>
-<li><span class="fragment cp-say"><strong>최대 연결 비율 80%</strong>: 다른 DB 접속을 위한 연결 여유 확보</span></li>
 </ul>
 </div></div>
 <aside class="notes">
 <p>안녕하십니까. 데이터베이스 구축을 담당한 우수빈입니다.</p>
 <p>저희는 <strong>안정적인 DB 운영을 위해 가용성과 연결 안정성에 중점을 두었습니다.</strong></p>
-<p>먼저 장애 발생 시 자동으로 다른 가용 영역으로 전환할 수 있도록 <strong>Multi-AZ를 적용</strong>하고, 장기적인 유지보수를 고려해 <strong>MySQL 8.4 LTS를 선택했습니다.</strong></p>
-<p>인스턴스는 비용 효율적인 T4g 계열을 검토했으며, 사전 부하 테스트에서 micro의 연결 사용률은 93%, small은 56%로 나타나 <strong>자원 여유가 큰 t4g.small을 선정했습니다.</strong></p>
-<p>또한 WAS 확장에 따른 DB 연결 증가에 대응하고, <strong>장애 조치 시 연결 복구를 지원하기 위해 RDS Proxy를 도입했습니다.</strong></p>
+<p>먼저 장애에 대비해 <strong>Multi-AZ를 적용</strong>하고, 장기적인 유지보수를 고려해 <strong>MySQL 8.4 LTS</strong>를 선택했습니다.</p>
+<p>인스턴스는 비용 효율적인 t4g 계열을 검토했으며, 사전 부하 테스트에서 <strong>micro는 연결 사용률이 93%로 최대 연결 수에 근접했고, 최소 가용 메모리도 91MiB까지 감소</strong>했습니다. 반면 <strong>small은 연결 사용률 56%, 가용 메모리 555MiB로 상대적으로 여유</strong>가 있어 <strong>t4g.small</strong>을 선정했습니다.</p>
+<p>또한 WAS 확장으로 DB 연결이 늘어나는 상황에 대비해 <strong>RDS Proxy를 적용했습니다.</strong></p>
+<p>이후 <strong>Multi-AZ 강제 장애 조치 후 쿼리를 반복 실행하며 복구 시간을 측정했습니다.</strong> 그 결과 직접 연결은 <strong>135초</strong>, Proxy 연결은 <strong>13초</strong>로, 복구 시간 약 90% 줄인 효과를 확인할 수 있었습니다.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -954,7 +989,7 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
       }</style></aside>
 </section>
 <section class="slide level2 smaller-text">
-<h2>DB 보안 구성과 데이터 적재</h2>
+<h2>DB 서버: DB 보안 구성과 데이터 적재</h2>
 <div class="columns">
 <div class="column" style="width:56%;">
 <p><strong>계정</strong></p>
@@ -995,17 +1030,12 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 <li><span class="fragment cp-say"><strong>별도 적재</strong>: 스키마와 초기 데이터 별도 적재</span></li>
 <li><span class="fragment cp-say"><strong>테스트 데이터 10만 건</strong>: owners 2만 / pets 3만 / visits 5만</span></li>
 </ul>
-<div class="box amber fragment cp-say" data-box-title="배운 점">
-<p>RDS Proxy와 Secrets Manager를 연동하는 과정에서 IAM 권한과 보안 그룹 설정이 DB 연결에 미치는 영향을 직접 확인하며, 보안과 접근 제어의 중요성을 체감했다.</p>
-</div>
 </div></div>
 <aside class="notes">
 <p>다음은 DB 보안 구성입니다.</p>
-<p>관리자 계정과 앱 계정을 분리해 필요한 권한만 부여했고, 비밀번호를 안전하게 관리하기 위해 Secrets Manager를 사용했습니다.</p>
-<p>또한 WAS가 DB에 직접 접근하지 않고, RDS Proxy를 거치도록 보안 그룹을 설정했습니다.</p>
-<p>WAS가 확장될 때 데이터가 다시 초기화되지 않도록 설정하고, 부하 테스트를 위해 데이터 10만 건을 별도로 적재했습니다.</p>
-<p>DB 계정을 분리하고 RDS Proxy로 접근 경로를 제한하면서, 단순한 연결 성공보다 안전한 연결 구조를 만드는 것이 중요하다는 점을 배웠습니다.</p>
-<p>이상으로 DB 발표를 마치겠습니다. 이어서 WEB 담당자가 발표하겠습니다.</p>
+<p><strong>마스터 계정과 애플리케이션 계정을 분리</strong>하여, 마스터 계정은 DB 관리에 사용하고 애플리케이션 계정에는 <strong>서비스 운영에 필요한 최소 권한만 부여했습니다.</strong></p>
+<p>또한 <strong>Secrets Manager로 비밀번호를 관리</strong>하고, WAS는 RDS Proxy를 통해서만 DB에 접근하도록 구성했습니다.</p>
+<p>이상으로 DB 발표를 마치겠습니다.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1017,15 +1047,10 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
-</section></section>
-<section>
-<section class="title-slide slide level1 section-slide center" data-background-color="#0b2545">
-<h1>웹 서버와 CloudFront</h1>
-
 </section>
 <section class="slide level2 smaller-text">
-<h2>Apache 리버스 프록시</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-code-line-numbers="|5-6|10"><pre class="sourceCode numberSource apache number-lines code-with-copy"><code class="sourceCode apache"><span id="cb1-1"><a href="" aria-label="1"></a><span class="fu">&lt;VirtualHost</span><span class="at"> *:80</span><span class="fu">&gt;</span></span>
+<h2>웹 서버: Apache 리버스 프록시</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-code-line-numbers="|5-6|9-10"><pre class="sourceCode numberSource apache number-lines code-with-copy"><code class="sourceCode apache"><span id="cb1-1"><a href="" aria-label="1"></a><span class="fu">&lt;VirtualHost</span><span class="at"> *:80</span><span class="fu">&gt;</span></span>
 <span id="cb1-2"><a href="" aria-label="2"></a>    ProxyAddHeaders On</span>
 <span id="cb1-3"><a href="" aria-label="3"></a>    <span class="ex">ProxyPreserveHost</span><span class="ch"> </span><span class="kw">On</span></span>
 <span id="cb1-4"><a href="" aria-label="4"></a>    <span class="ex">RewriteEngine</span><span class="ch"> </span><span class="kw">On</span></span>
@@ -1056,7 +1081,7 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
       }</style></aside>
 </section>
 <section class="slide level2 smaller-text">
-<h2>CloudFront와 외부 ALB 보호</h2>
+<h2>웹 서버: CloudFront와 외부 ALB 보호</h2>
 <div class="columns">
 <div class="column" style="width:48%;">
 <p><strong>CloudFront (정액 요금제 Free)</strong></p>
@@ -1092,14 +1117,9 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
-</section></section>
-<section>
-<section class="title-slide slide level1 section-slide center" data-background-color="#0b2545">
-<h1>부하 시험과 마무리</h1>
-
 </section>
 <section class="slide level2 smaller-text">
-<h2>부하 시험 (k6)</h2>
+<h2>검증: k6 부하 시험</h2>
 <div class="columns">
 <div class="column" style="width:45%;">
 <p><strong>시험 방법</strong></p>
@@ -1159,7 +1179,7 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
       }</style></aside>
 </section>
 <section class="slide level2 smaller-text">
-<h2>배운 점과 남은 과제</h2>
+<h2>마무리: 배운 점과 남은 과제</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <!-- 교체 필요: 배운 점은 임시 문장이다. 담당자 본인의 말로 바꾼다. -->
@@ -1173,7 +1193,6 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 <ul>
 <li><span class="fragment cp-say">ssm 엔드포인트가 AZ A에만 존재하여, AZ A 장애 시 신규 WAS의 설정 조회 실패 가능 → AZ C 추가</span></li>
 <li><span class="fragment cp-say">WAF 속도 제한을 모니터 모드에서 <strong>차단 모드로</strong> 전환</span></li>
-<li><span class="fragment cp-say">WAS 정상 대상 수 경보 (SNS 이메일)</span></li>
 <li><span class="fragment cp-say">수작업 구축을 IaC로 옮기기</span></li>
 </ul>
 </div></div>
@@ -1192,12 +1211,15 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
       }</style></aside>
 </section>
 <section class="slide level2 smaller-text">
-<h2>최종 결과물</h2>
+<h2>마무리: 최종 결과물</h2>
 <ul>
 <li><span class="fragment cp-say"><strong>설계도</strong>: 3계층, AZ 두 곳, NAT 게이트웨이 없는 구성</span></li>
 <li><span class="fragment cp-say"><strong>IP 주소 지도와 보안 그룹</strong>: 서브넷 14개, 앞 계층만 허용하는 보안 그룹 사슬</span></li>
 <li><span class="fragment cp-say"><strong>VPC 엔드포인트</strong>: ssm, ssmmessages, secretsmanager, monitoring, S3</span></li>
-<li><span class="fragment cp-say"><strong>절차서</strong>: 구축 단계 전체와 정책 파일, 설정 파일 (GitHub 저장소와 Wiki)</span></li>
+<li><span class="fragment cp-say"><strong>절차서 (Wiki)</strong>: 구축 단계 전체<br>
+<a href="https://github.com/cldnn/petclinic-infra/wiki">https://github.com/cldnn/petclinic-infra/wiki</a></span></li>
+<li><span class="fragment cp-say"><strong>구축 파일 (저장소)</strong>: 정책 파일, 설정 파일과 그 설명<br>
+<a href="https://github.com/cldnn/petclinic-infra">https://github.com/cldnn/petclinic-infra</a></span></li>
 <li><span class="fragment cp-say"><strong>WAS 대시보드</strong>: 요청을 처리한 WAS와 대상 상태 → 시연에서 확인</span></li>
 </ul>
 <aside class="notes">
@@ -1213,14 +1235,9 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
-</section></section>
-<section>
-<section class="title-slide slide level1 section-slide center" data-background-color="#0b2545">
-<h1>시연</h1>
-
 </section>
 <section class="slide level2">
-<h2>시연 영상</h2>
+<h2>시연: 영상</h2>
 <!--
   영상 파일을 assets/demo.mp4로 넣으면 그대로 재생된다. YouTube에 올렸다면
   주소를 https://www.youtube.com/embed/<영상 ID>로 바꾼다.
@@ -1246,7 +1263,7 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
-</section></section>
+</section>
 <section class="title-slide slide level1 section-slide center" data-background-color="#0b2545">
 <h1>감사합니다.</h1>
 <p>Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈</p>
