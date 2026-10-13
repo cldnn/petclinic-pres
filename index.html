@@ -317,13 +317,13 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 <section class="slide level2 smaller-text" data-glossary-skip="true">
 <h2>목차</h2>
 <ol type="1">
-<li>서비스 시나리오, 팀과 작업 방식, 비용 결정 (김승환)</li>
+<li>프로젝트 요구 사항, 작업 방식과 팀 구성, 비용 결정 (김승환)</li>
 <li>아키텍처와 작업 기반 (김태준)</li>
 <li>WAS (김건형)</li>
 <li>DB 서버 (우수빈)</li>
 <li>웹 서버와 CloudFront (양진현)</li>
-<li>시연 (김건형, 김승환)</li>
-<li>마무리 (김승환)</li>
+<li>시연 (김승환, 김건형)</li>
+<li>마무리 (김건형)</li>
 </ol>
 <aside class="notes">
 <p>10초. 넘기면서 “구축한 순서대로 담당자가 직접 발표한다”고만 말한다.</p>
@@ -341,18 +341,19 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
       }</style></aside>
 </section>
 <section class="slide level2 smaller-text" data-glossary-skip="true">
-<h2>프로젝트 개요와 서비스 시나리오</h2>
+<h2>프로젝트 요구 사항</h2>
 <div>
-<p>동물병원 3,000개 지점을 24시간 운영하는 펫 클리닉의 병원 직원용 홈페이지(PetClinic) 인프라 AWS 구축 의뢰</p>
+<p>동물병원 3,000개 지점을 24시간 운영하는 동물 병원 직원용 홈페이지를 AWS로 구축</p>
 </div>
 <div>
+<p><strong>요구 사항</strong></p>
 <ul>
 <li>AZ 장애 시에도 서비스 지속</li>
-<li>하루 평균 요청 50~800 RPS</li>
-<li>고객 정보 저장 시 암호화, 백업</li>
+<li>시간대 별 평균 초당 요청량 약 50 ~ 800건</li>
+<li>고객 정보 저장 시 암호화 및 백업</li>
 <li>병원 양식의 오류 페이지</li>
-<li>Apache, Tomcat, OpenJDK 기반</li>
-<li>사용자 규모 확대</li>
+<li>Apache, Tomcat, OpenJDK 기반 구축</li>
+<li>사용자 규모 확대 예상 설계</li>
 </ul>
 </div>
 <aside class="notes">
@@ -389,7 +390,7 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 </tr>
 <tr class="even">
 <td>김건형</td>
-<td>WAS (+ 내부 ALB)</td>
+<td>WAS</td>
 </tr>
 <tr class="odd">
 <td>김승환</td>
@@ -397,11 +398,11 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 </tr>
 <tr class="even">
 <td>양진현</td>
-<td>웹 서버 (+ 외부 ALB, CloudFront)</td>
+<td>웹 서버, CloudFront</td>
 </tr>
 <tr class="odd">
 <td>우수빈</td>
-<td>DB 서버 (+ RDS 프록시)</td>
+<td>DB 서버, RDS 프록시</td>
 </tr>
 </tbody>
 </table>
@@ -420,7 +421,7 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
           display:block!important;
       }</style></aside>
 <div class="cp-glossary">
-<span class="cp-gloss-item"><strong>IAM</strong> = Identity and Access Management</span> <span class="cp-gloss-item"><strong>WAS</strong> = Web Application Server</span> <span class="cp-gloss-item"><strong>ALB</strong> = Application Load Balancer</span> <span class="cp-gloss-item"><strong>PM</strong> = Project Manager</span> <span class="cp-gloss-item"><strong>DB</strong> = Database</span> <span class="cp-gloss-item"><strong>RDS</strong> = Relational Database Service</span>
+<span class="cp-gloss-item"><strong>IAM</strong> = Identity and Access Management</span> <span class="cp-gloss-item"><strong>WAS</strong> = Web Application Server</span> <span class="cp-gloss-item"><strong>PM</strong> = Project Manager</span> <span class="cp-gloss-item"><strong>DB</strong> = Database</span> <span class="cp-gloss-item"><strong>RDS</strong> = Relational Database Service</span>
 </div>
 </section>
 <section class="slide level2 smaller-text" data-glossary-skip="true">
@@ -433,12 +434,11 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
   <div class="cp-tool" role="listitem"><img src="assets/tool-icons/jira.svg" alt=""><span>Jira</span><span class="cp-tool-use">작업 관리</span></div>
   <div class="cp-tool" role="listitem"><img src="assets/tool-icons/github.svg" alt=""><span>GitHub</span><span class="cp-tool-use">코드 협업</span></div>
   <div class="cp-tool" role="listitem"><img src="assets/tool-icons/notion.svg" alt=""><span>Notion</span><span class="cp-tool-use">문서 정리</span></div>
-  <div class="cp-tool" role="listitem"><img src="assets/tool-icons/wiki.svg" alt=""><span>Wiki</span><span class="cp-tool-use">구축 문서</span></div>
   <div class="cp-tool" role="listitem"><img src="assets/tool-icons/quarto.svg" alt=""><span>Quarto</span><span class="cp-tool-use">발표 자료 제작</span></div>
 </div>
 </div>
 <aside class="notes">
-<p>20초. AWS에서 인프라를 구축하고 IntelliJ로 애플리케이션을 확인했다. k6로 부하 시험을 하고 Jira·GitHub로 협업했으며 Notion·Wiki에 문서를 정리했다. Quarto로 발표 자료를 제작했다. 아이콘 출처: Devicon (AWS, IntelliJ, k6, Jira, GitHub, Notion, MIT), Primer Octicons (Wiki, MIT), Quarto 공식 웹사이트 저장소 (Quarto). IntelliJ IDEA 및 로고 © 2026 JetBrains s.r.o. (https://www.jetbrains.com).</p>
+<p>20초. AWS에서 인프라를 구축하고 IntelliJ로 애플리케이션을 확인했다. k6로 부하 시험을 하고 Jira·GitHub로 협업했으며 Notion·Wiki에 문서를 정리했다. Quarto로 발표 자료를 제작했다. 아이콘 출처: Devicon (AWS, IntelliJ, k6, Jira, GitHub, Notion, MIT), Quarto 공식 웹사이트 저장소 (Quarto). IntelliJ IDEA 및 로고 © 2026 JetBrains s.r.o. (https://www.jetbrains.com).</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -456,7 +456,6 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 <div class="cp-cost-decisions">
   <div class="cp-cost-panel">
     <h3 class="cp-cost-panel-title">AWS 서비스 연결</h3>
-    <p class="cp-cost-panel-subtitle">월 고정 요금 비교</p>
     <div class="cp-cost-bars" role="group" aria-label="NAT 게이트웨이 2개 93.44 USD/월, 선택한 인터페이스 VPC 엔드포인트 6개 56.94 USD/월">
       <div class="cp-cost-bar-row">
         <div class="cp-cost-bar-meta"><span>NAT 게이트웨이 2개</span><span class="cp-cost-bar-value">93.44 USD/월</span></div>
@@ -469,13 +468,12 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
     </div>
     <div class="cp-cost-benefits">
       <p><b>결정</b><strong>인터페이스 VPC 엔드포인트 6개</strong></p>
-      <p><b>비용</b><strong>월 고정 요금 36.50 USD 절감</strong></p>
+      <p><b>비용</b><strong>월 고정 요금 약 39% 절감</strong></p>
       <p><b>보안</b><span>인터넷 출구 없이 AWS 서비스에 사설 연결</span></p>
     </div>
   </div>
   <div class="cp-cost-panel">
-    <h3 class="cp-cost-panel-title">웹과 WAS 인스턴스</h3>
-    <p class="cp-cost-panel-subtitle">인스턴스별 시간당 비용</p>
+    <h3 class="cp-cost-panel-title">EC2 인스턴스 유형</h3>
     <div class="cp-cost-bars cp-cost-bars-instances" role="group" aria-label="t3.micro 0.0130 USD/시간, t4g.micro 0.0104 USD/시간, t3.small 0.0260 USD/시간, t4g.small 0.0208 USD/시간">
       <div class="cp-cost-bar-row">
         <div class="cp-cost-bar-meta"><span>t3.micro</span><span class="cp-cost-bar-value">0.0130 USD/시간</span></div>
@@ -496,13 +494,13 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
     </div>
     <div class="cp-cost-benefits">
       <p><b>결정</b><strong>웹 t4g.micro 2대, WAS t4g.small 2대</strong></p>
-      <p><b>비용</b><strong>같은 크기의 t3보다 시간당 비용 20% 절감</strong></p>
-      <p><b>근거</b><span>웹은 micro에서 성능 요구 충족<br>WAS는 기본 메모리 사용량을 고려해 small</span></p>
+      <p><b>비용</b><strong>t4g가 t3보다 시간당 비용 20% 절감</strong></p>
+      <p><b>성능</b><span>웹은 micro에서 성능 요구 충족<br>WAS는 기본 메모리 사용량을 고려해 small</span></p>
     </div>
   </div>
 </div>
 <aside class="notes">
-<p>45초. AWS 서비스 연결에는 인터페이스 VPC 엔드포인트 6개를 사용한다. 기존 추산에서 월 고정 요금은 56.94 USD로, NAT 게이트웨이 2개 구성의 93.44 USD보다 36.50 USD 낮다. 이 비교에는 데이터 처리·전송 요금이 빠져 있으며 엔드포인트는 일반 인터넷 통신을 대신하지 않는다. 운영 서버는 인터넷 출구 없이 AWS 서비스에 사설 연결한다. NAT 게이트웨이 1개 구성은 더 저렴하지만 한 AZ의 장애가 다른 AZ의 통신에도 영향을 줄 수 있어 비교 기준에서 제외했다. 웹은 micro에서 성능 요구를 충족해 t4g.micro 2대를 선택했다. WAS는 기본 메모리 사용량을 고려해 t4g.small 2대를 선택했다. 기존 추산에서 t3.micro와 t4g.micro의 시간당 비용은 각각 0.0130, 0.0104 USD이며, t3.small과 t4g.small은 각각 0.0260, 0.0208 USD다. 같은 크기의 t3 대비 시간당 비용이 20% 낮다. 전체 월 고정 요금 추산은 부록을 참고한다. 비용 항목별 과금 범위 참고: <a href="https://aws.amazon.com/vpc/pricing/">AWS VPC 요금</a>. 사설 연결 참고: <a href="https://docs.aws.amazon.com/vpc/latest/privatelink/privatelink-access-aws-services.html">AWS PrivateLink를 통한 AWS 서비스 접근</a>. 비교 막대 표현 참고: <a href="https://www.datawrapper.de/blog/comparison-columns">Datawrapper 비교 열</a>, <a href="https://www.datawrapper.de/blog/text-in-data-visualizations">직접 레이블</a>.</p>
+<p>45초. AWS 서비스 연결에는 인터페이스 VPC 엔드포인트 6개를 사용한다. 기존 추산에서 월 고정 요금은 56.94 USD로, NAT 게이트웨이 2개 구성의 93.44 USD보다 36.50 USD(약 39%) 낮다. 이 비교에는 데이터 처리·전송 요금이 빠져 있으며 엔드포인트는 일반 인터넷 통신을 대신하지 않는다. 운영 서버는 인터넷 출구 없이 AWS 서비스에 사설 연결한다. NAT 게이트웨이 1개 구성은 더 저렴하지만 한 AZ의 장애가 다른 AZ의 통신에도 영향을 줄 수 있어 비교 기준에서 제외했다. 웹은 micro에서 성능 요구를 충족해 t4g.micro 2대를 선택했다. WAS는 기본 메모리 사용량을 고려해 t4g.small 2대를 선택했다. 기존 추산에서 t3.micro와 t4g.micro의 시간당 비용은 각각 0.0130, 0.0104 USD이며, t3.small과 t4g.small은 각각 0.0260, 0.0208 USD다. 같은 크기의 t3 대비 시간당 비용이 20% 낮다. 전체 월 고정 요금 추산은 부록을 참고한다. 비용 항목별 과금 범위 참고: <a href="https://aws.amazon.com/vpc/pricing/">AWS VPC 요금</a>. 사설 연결 참고: <a href="https://docs.aws.amazon.com/vpc/latest/privatelink/privatelink-access-aws-services.html">AWS PrivateLink를 통한 AWS 서비스 접근</a>. 비교 막대 표현 참고: <a href="https://www.datawrapper.de/blog/comparison-columns">Datawrapper 비교 열</a>, <a href="https://www.datawrapper.de/blog/text-in-data-visualizations">직접 레이블</a>.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -519,19 +517,6 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 <section class="title-slide slide level1 section-slide center" data-background-color="#0b2545">
 <h1>아키텍처</h1>
 <p>김태준</p>
-<!--
-  아키텍처 (김태준).
-
-  이 파일의 슬라이드는 fragment-index로 순서를 직접 매긴다. 한 슬라이드에서
-  번호를 하나라도 지정하면 번호 없는 항목은 맨 뒤로 밀리므로, 항목을 추가하면
-  번호도 동시에 부여한다. 동일한 번호는 동시에 전환된다(문장이 밝아지는 순간
-  그림의 적색 상자가 같이 켜진다).
-
-  그림 위 적색 상자(.cp-mark)는 그 번호 차례에만 보이고 다음 차례에 사라진다.
-  위치와 크기는 그림 크기에 대한 백분율이고, 대상의 경계에 딱 맞춘다. 여백은
-  CSS가 사방에 같은 폭으로 둔다. 그림을 교체하면 left, top, width, height만
-  고친다. PDF와 Shift+E 화면에는 나오지 않는다.
--->
 </section>
 <section class="slide level2 smaller-text" data-glossary-terms="AWS WAF S3 VPC">
 <h2>아키텍처: 사용자 요청 경로</h2>
@@ -548,7 +533,7 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 <p><img data-src="assets/architecture-resource.png" height="530"></p>
 </div>
 <div class="cp-glossary">
-<span class="cp-gloss-item"><strong>IGW</strong> = Internet Gateway</span>
+<span class="cp-gloss-item"><strong>IGW</strong> = Internet Gateway</span> <span class="cp-gloss-item"><strong>ALB</strong> = Application Load Balancer</span>
 </div>
 </section>
 <section class="slide level2 smaller-text">
@@ -561,7 +546,7 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 </div>
 </section>
 <section class="slide level2 smaller-text">
-<h2>아키텍처: 보안 그룹 사슬과 관리 접속</h2>
+<h2>아키텍처: 보안 그룹 체이닝</h2>
 <div>
 <div class="cp-chain">
   <span class="node">CloudFront<small>접두사 목록</small></span>
@@ -579,12 +564,12 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
   <span class="node">RDS</span>
   <span class="drop" style="grid-column: 5; grid-row: 2;"><span>443</span></span>
   <span class="drop" style="grid-column: 9; grid-row: 2;"><span>443</span></span>
-  <span class="node vpce" style="grid-column: 5 / 10; grid-row: 3;">VPC 엔드포인트<small>ssm, ssmmessages,<br>secretsmanager (2 AZs), monitoring (2 AZs)</small></span>
+  <span class="node vpce" style="grid-column: 5 / 10; grid-row: 3;">인터페이스 엔드포인트<small>ssm, ssmmessages,<br>secretsmanager (2 AZs), monitoring (2 AZs)</small></span>
 </div>
 </div>
 <ul>
-<li>각 구성 요소는 <strong>바로 앞 요소의 보안 그룹이나 접두사 목록</strong>만 인바운드 소스로 허용한다.]</li>
-<li>EC2 인스턴스는 Session Manager로 접속한다.</li>
+<li>각 구성 요소의 인바운드 소스로는 <strong>바로 앞 요소의 보안 그룹이나 접두사 목록</strong>만 허용</li>
+<li>Session Manager로 EC2 인스턴스에 접속</li>
 </ul>
 <div class="cp-glossary">
 <span class="cp-gloss-item"><strong>EC2</strong> = Elastic Compute Cloud</span>
@@ -974,8 +959,8 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 <div class="column" style="width:48%;">
 <p><strong>RDS for MySQL 8.4</strong></p>
 <ul>
-<li><strong>MySQL 8.4 LTS</strong>: 장기 지원 및 유지보수</li>
-<li><strong>Multi-AZ</strong>: 장애 발생 시 서비스 연속성 확보</li>
+<li><strong>MySQL 8.4 LTS</strong>: PetClinic MySQL 환경과의 호환성 및 장기 지원 확보</li>
+<li><strong>Multi-AZ</strong>: Single-AZ와 달리 Standby DB로 자동 전환해 장애 복구 시간 단축</li>
 </ul>
 <hr>
 <table class="caption-top">
@@ -999,12 +984,12 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 </tr>
 </tbody>
 </table>
-<p>→ 추가 부하 대응 여유가 상대적으로 큰 <span class="hl"><strong>db.t4g.small</strong></span> 선택</p>
+<p>→ 부하 증가에 더 안정적으로 대응할 수 있는 <span class="hl">db.t4g.small</span> 선택</p>
 <p><small>※ 동일 부하 테스트: 63 RPS × 15분</small></p>
 </div><div class="column" style="width:52%;">
 <p><strong>RDS Proxy 적용</strong></p>
 <ul>
-<li><strong>확장성</strong>: WAS 증가에 따른 DB 연결 급증 대응</li>
+<li><strong>확장성</strong>: WAS 증가 시 <span class="hl">Proxy로 DB 연결 부담 완화</span></li>
 <li><strong>가용성</strong>: 장애 조치 시 <span class="hl">DB 복구 시간 단축</span></li>
 </ul>
 <hr>
@@ -1036,19 +1021,16 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 </section>
 <section class="slide level2 smaller-text">
 <h2>DB 서버: DB 보안 구성과 데이터 적재</h2>
-<div class="columns">
-<div class="column" style="width:56%;">
 <p><strong>계정</strong></p>
 <ul>
-<li><span><strong>최소 권한</strong>: 앱 계정에 petclinic DB의 필요한 권한만 부여</span></li>
-<li><span><strong>인증 정보 관리</strong>: Secrets Manager의 Secret 조회</span></li>
+<li><span><strong>최소 권한</strong>: WAS 전용 계정에 petclinic DB의 <span class="hl">필요 권한만 부여</span></span></li>
+<li><span><strong>인증 정보 관리</strong>: Secrets Manager에 DB 계정 정보 저장</span></li>
 </ul>
 <p><strong>적재</strong></p>
 <ul>
 <li><span><strong>DB 초기화 제어</strong>: WAS 확장 시 초기화 SQL 자동 실행 비활성화</span></li>
 <li><span><strong>테스트 데이터 10만 건</strong>: owners 2만 / pets 3만 / visits 5만</span></li>
 </ul>
-</div></div>
 <div class="cp-glossary">
 <span class="cp-gloss-item"><strong>SQL</strong> = Structured Query Language</span>
 </div>
@@ -1072,9 +1054,9 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 <span id="cb1-10"><a href="" aria-label="10"></a>    ProxyPassReverse<span class="st"> "/petclinic/" "http://&lt;INTERNAL_ALB_DNS&gt;/petclinic/"</span></span>
 <span id="cb1-11"><a href="" aria-label="11"></a><span class="fu">&lt;/VirtualHost&gt;</span></span></code></pre></div><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
-<li><code>/petclinic/</code>만 WAS로 넘기고, 나머지는 Apache가 직접 응답</li>
-<li>내부 ALB는 IP가 아니라 <strong>DNS 이름</strong>으로 가리킨다.</li>
-<li>SELinux에서 <code>httpd_can_network_connect</code> 허용</li>
+<li><code>/petclinic/</code>만 WAS로 넘기고, 나머지는 Apache가 직접 응답한다.</li>
+<li>내부 ALB는 IP가 아니라 <strong>DNS 이름</strong>으로 가킨다.</li>
+<li>SELinux에서 <code>httpd_can_network_connect</code> 허용한다.</li>
 </ul>
 <aside class="notes">
 <p>45초. ttl을 ALB 유휴 시간보다 짧게 두는 이유(ALB가 먼저 끊은 연결을 다시 쓰면 502)를 한 문장으로.</p>
@@ -1260,7 +1242,7 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 <section class="slide level2 smaller-text">
 <h2>시연: WAS 자동 확장 시나리오</h2>
 <div class="screen-only center-text">
-<iframe data-external="1" src="https://www.youtube.com/embed/1ocqK0kxZD0" width="960" height="540" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+<iframe data-external="1" src="https://www.youtube.com/embed/A4oH677hP7Q" width="960" height="540" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
 </div>
 <div class="print-only">
 <p><img data-src="assets/demo-load-test.png" height="480"></p>
