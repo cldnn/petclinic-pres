@@ -6,8 +6,8 @@
 <script src="libs/quarto-html/tippy.umd.min.js"></script>
 <link href="libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="libs/quarto-html/quarto-syntax-highlighting-5c1318cf63eba56dbef7ba16bc7d56f5.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.10.19">
+<link href="libs/quarto-html/quarto-syntax-highlighting-bb62276ab45c84d9efd712f51ff97b5a.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.10.18">
 
   <meta name="author" content="Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈">
   <title>펫 클리닉 3계층 아키텍처 인프라 구축</title>
@@ -196,99 +196,52 @@
     }
   </style>
   <!-- ---------------------------------------------------------------------------
-
     cloudpres - 글꼴(fonts)
-
-  
 
     <head> 에 삽입됩니다. 덱에 글꼴을 넣는 방법은 두 가지입니다.
 
-  
-
     1) 구글 웹폰트 - 아래 <link>. 기본값은 본문 IBM Plex Sans KR, 코드 IBM Plex Mono.
-
        굵기를 더 쓰고 싶으면 wght 범위만 넓히면 됩니다.
 
-  
-
     2) 직접 가진 글꼴 파일 - .woff2 파일을 assets/fonts/에 넣고 아래 <style>
-
        안에서 @font-face로 선언합니다. 여기 경로는 렌더된 .html 기준이므로
-
        "assets/fonts/이름.woff2" 가 맞습니다. assets/를 _output/으로 복사하는
-
        일은 _quarto.yml의 resources가 대신 해 줍니다.
 
-  
-
     어느 쪽이든 마지막에 theme.scss의 $cp-font-sans / $cp-font-mono가 그
-
     family 이름을 가리키게 하면 끝입니다. README "글꼴 바꾸기" 참고.
 
-  
-
     폐쇄망이거나 프록시 뒤라면: 아래 <link> 세 줄을 지우고, .woff2 파일을
-
     assets/fonts/에 넣은 뒤 2)번 경로만 쓰십시오.
-
   --------------------------------------------------------------------------- -->
 
-  
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
-
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
 
-  
-
   <style>
-
     /* -------------------------------------------------------------------------
-
        직접 가진 글꼴 파일. 주석을 풀고 이름과 파일명만 바꾸면 됩니다.
-
        가변 폰트(variable font)면 블록 하나로 충분하고, 굵기별 파일이면
-
        블록을 굵기 수만큼 복사하십시오.
 
-  
-
     @font-face {
-
       font-family: "Pretendard";
-
       src: url("assets/fonts/PretendardVariable.woff2") format("woff2-variations");
-
       font-weight: 300 700;
-
       font-style: normal;
-
       font-display: swap;
-
     }
-
-  
 
     @font-face {
-
       font-family: "D2Coding";
-
       src: url("assets/fonts/D2Coding.woff2") format("woff2");
-
       font-weight: 400;
-
       font-style: normal;
-
       font-display: swap;
-
     }
-
        ------------------------------------------------------------------------- */
-
   </style>
-
 </head>
 <body class="quarto-light">
   <div class="reveal">
@@ -955,6 +908,13 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
   assets/demo-was-failover.png이며, 지금은 자리표시 그림이니 동일한 이름의
   캡처로 교체한다. 그림 이름이 영상별이라 순서를 바꿔도 그대로 따라간다.
 
+  발표 중 조작(cloudpres.html의 "video slides"): 영상 슬라이드에서 다음 키를
+  누르면 재생되고, 한 번 더 누르면 멈추고 다음 슬라이드로 넘어간다. 화살표 키,
+  클리커, 마우스 휠이 모두 같다. 장애 복구 슬라이드는 영상을 .cp-video-first로
+  감싸, 첫 다음에 재생을 시작하고 이어지는 다음은 영상을 틀어 둔 채 오른쪽
+  사건을 하나씩 보여 준다. 슬라이드를 떠나면 멈춘다. 이 동작을 빼려면
+  .cp-video-first 자리에 .cp-video-manual을 쓴다.
+
   index.html을 더블클릭해 file://로 열면 YouTube가 오류 153을 낸다.
   render.cmd -Preview로 열거나 배포된 주소로 본다.
 -->
@@ -1254,7 +1214,7 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 </div>
 <div class="screen-only">
 <div class="demo-grid">
-<div class="demo-video">
+<div class="demo-video cp-video-first">
 <iframe data-external="1" src="https://www.youtube.com/embed/tnnP2QoxblA" width="640" height="360" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
 </div>
 <div class="demo-events">
@@ -1586,6 +1546,12 @@ CloudShell 명령 실행
 
       #cp-emphasis-toast.cp-visible { opacity: 1; }
 
+    
+
+      /* The hidden step that starts a video (see "video slides" below). */
+
+      .reveal .cp-video-step { display: none; }
+
     </style>
 
     
@@ -1785,6 +1751,350 @@ CloudShell 명령 실행
           });
 
         }
+
+    
+
+        /* --- video slides play on "next", like Google Slides -------------------
+
+           A slide with a video (YouTube, Vimeo or a local file) gets one hidden
+
+           step after its other steps. The next key, a clicker, the wheel or the
+
+           arrow button shows that step, and showing it starts the video. The
+
+           press after that leaves the slide, and reveal pauses the video on the
+
+           way out. Stepping back over the step pauses it; coming back to the
+
+           slide from the next one puts the step back, so "next" plays again.
+
+           If the video was started with the mouse, the next press pauses it and
+
+           moves on straight away (YouTube only: Vimeo does not report its state
+
+           here, so there that press only plays).
+
+    
+
+           Clicking a player moves keyboard focus into its iframe, and from then
+
+           on the deck's keys and a clicker reach the player, not the deck. Focus
+
+           is handed back to the deck right after the click.
+
+    
+
+           `::: {.cp-video-first}` around a video puts its step before the
+
+           slide's other steps instead: the first "next" starts the video, the
+
+           following ones show the other steps while it keeps playing, and
+
+           leaving the slide pauses it. Use it when the steps narrate the video.
+
+           `::: {.cp-video-manual}` around a video leaves it alone, as does
+
+           `data-autoplay` (reveal starts that one itself).
+
+    
+
+           None of this can be tried from file:// - YouTube refuses to play
+
+           there (error 153). Check it with render.cmd -Preview or the published
+
+           site. */
+
+        (function () {
+
+          if (isPrintView() || !window.Reveal) return;
+
+          var SEL = 'iframe[src*="youtube.com/embed/"], iframe[src*="youtube-nocookie.com/embed/"],' +
+
+                    ' iframe[src*="player.vimeo.com/"], video';
+
+          var PLAYING = 1, BUFFERING = 3;   // YouTube player states
+
+          var players = [];
+
+    
+
+          function send(p, cmd) {           // "play" | "pause"
+
+            if (Reveal.isSpeakerNotes()) return;   // the notes window shows the slide too
+
+            if (p.kind === "file") {
+
+              var r = cmd === "play" ? p.el.play() : p.el.pause();
+
+              if (r && r.catch) r.catch(function () {});
+
+              return;
+
+            }
+
+            var w = p.el.contentWindow;
+
+            if (!w) return;
+
+            w.postMessage(p.kind === "vimeo"
+
+              ? JSON.stringify({ method: cmd })
+
+              : JSON.stringify({ event: "command", func: cmd + "Video", args: "" }), "*");
+
+          }
+
+    
+
+          function isPlaying(p) {
+
+            if (p.kind === "file") return !p.el.paused && !p.el.ended;
+
+            return p.state === PLAYING || p.state === BUFFERING;   // unknown counts as not
+
+          }
+
+    
+
+          // YouTube takes commands from any page once the URL has enablejsapi=1
+
+          // (reveal adds it too), but reports its state only to a page that names
+
+          // itself in `origin` and then says it is "listening". Without the state
+
+          // the steps still work; only the "already playing" case is missed.
+
+          function prepareYouTube(p) {
+
+            var src = p.el.getAttribute("src");
+
+            var add = [];
+
+            if (!/[?&]enablejsapi=/.test(src)) add.push("enablejsapi=1");
+
+            if (/^https?:$/.test(location.protocol) && !/[?&]origin=/.test(src)) {
+
+              add.push("origin=" + encodeURIComponent(location.origin));
+
+            }
+
+            if (add.length) {
+
+              p.el.setAttribute("src", src + (src.indexOf("?") < 0 ? "?" : "&") + add.join("&"));
+
+            }
+
+            p.el.addEventListener("load", function () { p.state = undefined; listen(p); });
+
+            listen(p);
+
+          }
+
+    
+
+          function listen(p) {
+
+            var tries = 0;
+
+            var timer = setInterval(function () {
+
+              if (p.state !== undefined || ++tries > 40) return clearInterval(timer);
+
+              var w = p.el.contentWindow;
+
+              if (w) w.postMessage(JSON.stringify({ event: "listening", id: p.id, channel: "widget" }), "*");
+
+            }, 250);
+
+          }
+
+    
+
+          window.addEventListener("message", function (e) {
+
+            if (!/^https:\/\/www\.youtube(-nocookie)?\.com$/.test(e.origin)) return;
+
+            var d;
+
+            try { d = typeof e.data === "string" ? JSON.parse(e.data) : e.data; } catch (err) { return; }
+
+            if (!d) return;
+
+            players.forEach(function (p) {
+
+              if (p.el.contentWindow !== e.source) return;
+
+              if (d.event === "onStateChange" && typeof d.info === "number") p.state = d.info;
+
+              else if (d.info && typeof d.info.playerState === "number") p.state = d.info.playerState;
+
+            });
+
+          });
+
+    
+
+          function stepsOf(ev) {
+
+            return (ev.fragments || [ev.fragment]).filter(function (f) { return f && f.cpVideo; });
+
+          }
+
+    
+
+          function addSteps() {
+
+            Reveal.getSlides().forEach(function (slide) {
+
+              var els = Array.prototype.filter.call(slide.querySelectorAll(SEL), function (el) {
+
+                return !el.closest(".cp-video-manual, .print-only") && !el.hasAttribute("data-autoplay");
+
+              });
+
+              // reveal numbered every step when it started. `.cp-video-first`
+
+              // steps take the first numbers, in the order the videos appear.
+
+              var nFirst = els.filter(function (el) { return el.closest(".cp-video-first"); }).length;
+
+              if (nFirst) {
+
+                slide.querySelectorAll(".fragment[data-fragment-index]").forEach(function (f) {
+
+                  f.setAttribute("data-fragment-index", parseInt(f.getAttribute("data-fragment-index"), 10) + nFirst);
+
+                });
+
+              }
+
+              var k = 0;
+
+              els.forEach(function (el) {
+
+                var p = {
+
+                  el: el,
+
+                  slide: slide,
+
+                  id: players.length + 1,
+
+                  first: !!el.closest(".cp-video-first"),
+
+                  kind: el.tagName === "VIDEO" ? "file" : (/vimeo/.test(el.getAttribute("src")) ? "vimeo" : "youtube")
+
+                };
+
+                if (p.kind === "youtube") prepareYouTube(p);
+
+                var step = document.createElement("span");
+
+                step.className = "fragment cp-video-step";
+
+                step.setAttribute("aria-hidden", "true");
+
+                step.cpVideo = p;
+
+                if (p.first) step.setAttribute("data-fragment-index", String(k++));
+
+                slide.appendChild(step);   // the others stay unnumbered, so reveal sorts them last, in order
+
+                players.push(p);
+
+              });
+
+            });
+
+            if (players.length) Reveal.sync();
+
+          }
+
+          if (Reveal.isReady()) addSteps(); else Reveal.on("ready", addSteps);
+
+    
+
+          Reveal.on("fragmentshown", function (ev) {
+
+            stepsOf(ev).forEach(function (f) {
+
+              var p = f.cpVideo;
+
+              if (isPlaying(p)) {             // started with the mouse: this press moves on
+
+                if (!p.first) send(p, "pause"); // a first step keeps it playing for the steps after
+
+                setTimeout(function () { Reveal.next(); }, 0);
+
+              } else {
+
+                players.forEach(function (q) {   // one video at a time on a slide
+
+                  if (q !== p && q.slide === p.slide) send(q, "pause");
+
+                });
+
+                send(p, "play");
+
+              }
+
+            });
+
+          });
+
+    
+
+          Reveal.on("fragmenthidden", function (ev) {
+
+            stepsOf(ev).forEach(function (f) { send(f.cpVideo, "pause"); });
+
+          });
+
+    
+
+          // Back on a video slide from the next one, reveal shows every step,
+
+          // ours included. Take ours back off so that "next" plays the video.
+
+          Reveal.on("slidechanged", function (ev) {
+
+            var shown = ev.currentSlide.querySelectorAll(".cp-video-step.visible");
+
+            if (!shown.length) return;
+
+            var first = Math.min.apply(null, Array.prototype.map.call(shown, function (f) {
+
+              return parseInt(f.getAttribute("data-fragment-index"), 10);
+
+            }));
+
+            if (!isNaN(first)) Reveal.slide(ev.indexh, ev.indexv, first - 1);
+
+          });
+
+    
+
+          // Focus back to the deck after a click into a player.
+
+          window.addEventListener("blur", function () {
+
+            setTimeout(function () {
+
+              var a = document.activeElement;
+
+              if (a && a.tagName === "IFRAME" && a.closest(".reveal .slides")) {
+
+                a.blur();
+
+                window.focus();
+
+              }
+
+            }, 0);
+
+          });
+
+        })();
 
     
 
