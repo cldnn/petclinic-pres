@@ -101,7 +101,7 @@
     code span.vs { color: #032f62; } /* VerbatimString */
     code span.wa { color: #ff5555; } /* Warning */
   </style>
-  <link rel="stylesheet" href="libs/revealjs/dist/theme/quarto-4a3de3eea9c7989cf3cb60c0b2381ac5.css">
+  <link rel="stylesheet" href="libs/revealjs/dist/theme/quarto-6b925369e54a3f6d8188d46efa750343.css">
   <link href="libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -325,55 +325,28 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 <li>시연 (김승환, 김건형)</li>
 <li>마무리 (김건형)</li>
 </ol>
-<aside class="notes">
-<p>10초. 넘기면서 “구축한 순서대로 담당자가 직접 발표한다”고만 말한다.</p>
-<p>WAS 발표에서는 보안, 비용, 안정성과 운영 이유를 해당 작업과 함께 설명한다. 시간 배분: 김승환 2분 30초(시나리오, 팀과 작업 방식, 일정, 비용) → 김태준 2분(아키텍처, 작업 기반) → 김건형 1분 30초 → 우수빈 1분 30초 → 양진현 1분 30초 → 시연 총 5분 → 김승환 45초(시험, 결과물, 마무리) 각 슬라이드의 노트(S 키)에 말할 거리와 시간을 적어 두었다. “초안” 표시가 있는 곳은 본인 경험이나 실제 결과로 바꿔야 한다.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
 </section>
 <section class="slide level2 smaller-text" data-glossary-skip="true">
 <h2>프로젝트 요구 사항</h2>
-<div>
-<p>동물병원 3,000개 지점을 24시간 운영하는 동물 병원 직원용 홈페이지를 AWS로 구축</p>
+<div style="margin-bottom: 0.9em;">
+<p>동물병원 3,000개 지점에 대하여 24시간 운영되는 동물병원 직원용 웹 서비스 인프라를 AWS로 구축</p>
 </div>
 <div>
 <p><strong>요구 사항</strong></p>
 <ul>
 <li>AZ 장애 시에도 서비스 지속</li>
-<li>시간대 별 평균 초당 요청량 약 50 ~ 800건</li>
+<li>시간대별 평균 초당 요청량 약 50~800건</li>
 <li>고객 정보 저장 시 암호화 및 백업</li>
 <li>병원 양식의 오류 페이지</li>
 <li>Apache, Tomcat, OpenJDK 기반 구축</li>
 <li>사용자 규모 확대 예상 설계</li>
 </ul>
 </div>
-<aside class="notes">
-<p>50초. 받은 요구 사항을 읽고, 설계 내용은 뒤에서 담당자가 하나씩 설명한다고 넘긴다. 5분 근거: WAS 대상은 상태 확인 2회 실패(약 40초)로 빠지고 남은 서버가 처리한다. DB 장애 조치는 보통 60~120초다. 질문이 나오면 이 두 숫자로 답한다. 앱을 만드는 프로젝트가 아니라 이미 있는 PetClinic을 운영할 인프라를 짓고 배우는 프로젝트라는 점도 한 문장 넣는다.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
 </section>
 <section class="slide level2 smaller-text">
 <h2>작업 방식과 팀 구성</h2>
 <div class="cp-figure">
-<img src="assets/workflow-overview.svg" alt="개발용 인프라 구축, 테스트, 운영용 인프라 구축, 테스트, 부하 시험, 교차 수행으로 이어지는 작업 흐름" style="width: 100%; height: auto;">
+<img src="assets/workflow-overview.svg" alt="개발용 인프라 구축, 테스트, 피드백, 운영용 인프라 구축, 테스트, 피드백, 교차 수행으로 이어지는 작업 흐름" style="width: 100%; height: auto;">
 </div>
 <div class="key-col">
 <table class="caption-top">
@@ -407,19 +380,6 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 </tbody>
 </table>
 </div>
-<aside class="notes">
-<p>35초. 개발용 인프라를 구축하고 테스트한 뒤 운영용 인프라를 구축했다. 운영용 인프라도 테스트하고 부하 시험과 교차 수행으로 확인했다. 동작과 근거를 확인한 결정만 남기고, 운영용 자원은 절차서에 따라 구축했다. 각자 주 담당 영역을 발표한다. 절차서와 교차 수행으로 구축을 표준화하고 재현 가능성을 확인했다. 교차 수행용 IAM 역할(pet-shared-sec-role-review)을 따로 만들어 서로의 작업을 검토했다. 도식 구성 참고: <a href="https://docs.aws.amazon.com/prescriptive-guidance/latest/strategy-cicd-litmus/understanding-cicd.html">AWS Prescriptive Guidance, Understanding CI/CD</a>의 개발·테스트·운영 단계 표현. 이 그림은 이 프로젝트의 작업 순서를 나타낸다.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
 <div class="cp-glossary">
 <span class="cp-gloss-item"><strong>IAM</strong> = Identity and Access Management</span> <span class="cp-gloss-item"><strong>WAS</strong> = Web Application Server</span> <span class="cp-gloss-item"><strong>PM</strong> = Project Manager</span> <span class="cp-gloss-item"><strong>DB</strong> = Database</span> <span class="cp-gloss-item"><strong>RDS</strong> = Relational Database Service</span>
 </div>
@@ -432,24 +392,11 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
   <div class="cp-tool" role="listitem"><img src="assets/tool-icons/intellijidea.svg" alt=""><span>IntelliJ</span><span class="cp-tool-use">로컬 개발</span></div>
   <div class="cp-tool" role="listitem"><img src="assets/tool-icons/k6.svg" alt=""><span>k6</span><span class="cp-tool-use">부하 시험</span></div>
   <div class="cp-tool" role="listitem"><img src="assets/tool-icons/jira.svg" alt=""><span>Jira</span><span class="cp-tool-use">작업 관리</span></div>
-  <div class="cp-tool" role="listitem"><img src="assets/tool-icons/github.svg" alt=""><span>GitHub</span><span class="cp-tool-use">코드 협업</span></div>
+  <div class="cp-tool" role="listitem"><img src="assets/tool-icons/github.svg" alt=""><span>GitHub</span><span class="cp-tool-use">게시용 자료 협업</span></div>
   <div class="cp-tool" role="listitem"><img src="assets/tool-icons/notion.svg" alt=""><span>Notion</span><span class="cp-tool-use">문서 정리</span></div>
   <div class="cp-tool" role="listitem"><img src="assets/tool-icons/quarto.svg" alt=""><span>Quarto</span><span class="cp-tool-use">발표 자료 제작</span></div>
 </div>
 </div>
-<aside class="notes">
-<p>20초. AWS에서 인프라를 구축하고 IntelliJ로 애플리케이션을 확인했다. k6로 부하 시험을 하고 Jira·GitHub로 협업했으며 Notion·Wiki에 문서를 정리했다. Quarto로 발표 자료를 제작했다. 아이콘 출처: Devicon (AWS, IntelliJ, k6, Jira, GitHub, Notion, MIT), Quarto 공식 웹사이트 저장소 (Quarto). IntelliJ IDEA 및 로고 © 2026 JetBrains s.r.o. (https://www.jetbrains.com).</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
 </section>
 <section class="slide level2 smaller-text" data-glossary-skip="true">
 <h2>비용 결정</h2>
@@ -467,7 +414,7 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
       </div>
     </div>
     <div class="cp-cost-benefits">
-      <p><b>결정</b><strong>인터페이스 VPC 엔드포인트 6개</strong></p>
+      <p><b>결정</b><span><strong>인터페이스 VPC 엔드포인트 6개</strong> 구성</span></p>
       <p><b>비용</b><strong>월 고정 요금 약 39% 절감</strong></p>
       <p><b>보안</b><span>인터넷 출구 없이 AWS 서비스에 사설 연결</span></p>
     </div>
@@ -493,25 +440,12 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
       </div>
     </div>
     <div class="cp-cost-benefits">
-      <p><b>결정</b><strong>웹 t4g.micro 2대, WAS t4g.small 2대</strong></p>
+      <p><b>결정</b><strong>웹 서버 t4g.micro, WAS t4g.small</strong></p>
       <p><b>비용</b><strong>t4g가 t3보다 시간당 비용 20% 절감</strong></p>
       <p><b>성능</b><span>웹은 micro에서 성능 요구 충족<br>WAS는 기본 메모리 사용량을 고려해 small</span></p>
     </div>
   </div>
 </div>
-<aside class="notes">
-<p>45초. AWS 서비스 연결에는 인터페이스 VPC 엔드포인트 6개를 사용한다. 기존 추산에서 월 고정 요금은 56.94 USD로, NAT 게이트웨이 2개 구성의 93.44 USD보다 36.50 USD(약 39%) 낮다. 이 비교에는 데이터 처리·전송 요금이 빠져 있으며 엔드포인트는 일반 인터넷 통신을 대신하지 않는다. 운영 서버는 인터넷 출구 없이 AWS 서비스에 사설 연결한다. NAT 게이트웨이 1개 구성은 더 저렴하지만 한 AZ의 장애가 다른 AZ의 통신에도 영향을 줄 수 있어 비교 기준에서 제외했다. 웹은 micro에서 성능 요구를 충족해 t4g.micro 2대를 선택했다. WAS는 기본 메모리 사용량을 고려해 t4g.small 2대를 선택했다. 기존 추산에서 t3.micro와 t4g.micro의 시간당 비용은 각각 0.0130, 0.0104 USD이며, t3.small과 t4g.small은 각각 0.0260, 0.0208 USD다. 같은 크기의 t3 대비 시간당 비용이 20% 낮다. 전체 월 고정 요금 추산은 부록을 참고한다. 비용 항목별 과금 범위 참고: <a href="https://aws.amazon.com/vpc/pricing/">AWS VPC 요금</a>. 사설 연결 참고: <a href="https://docs.aws.amazon.com/vpc/latest/privatelink/privatelink-access-aws-services.html">AWS PrivateLink를 통한 AWS 서비스 접근</a>. 비교 막대 표현 참고: <a href="https://www.datawrapper.de/blog/comparison-columns">Datawrapper 비교 열</a>, <a href="https://www.datawrapper.de/blog/text-in-data-visualizations">직접 레이블</a>.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
 </section>
 <section>
 <section class="title-slide slide level1 section-slide center" data-background-color="#0b2545">
@@ -519,34 +453,35 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 <p>김태준</p>
 </section>
 <section class="slide level2 smaller-text" data-glossary-terms="AWS WAF S3 VPC">
-<h2>아키텍처: 사용자 요청 경로</h2>
+<h2>VPC 외부 구성</h2>
 <div class="cp-figure">
-<p><img data-src="assets/architecture-edge.png" height="490"></p>
+<p><img data-src="assets/architecture-edge.png" height="580"></p>
 </div>
 <div class="cp-glossary">
-<span class="cp-gloss-item"><strong>AWS</strong> = Amazon Web Services</span> <span class="cp-gloss-item"><strong>WAF</strong> = Web Application Firewall</span> <span class="cp-gloss-item"><strong>S3</strong> = Simple Storage Service</span> <span class="cp-gloss-item"><strong>VPC</strong> = Virtual Private Cloud</span>
+<span class="cp-gloss-item"><strong>VPC</strong> = Virtual Private Cloud</span> <span class="cp-gloss-item"><strong>AWS</strong> = Amazon Web Services</span> <span class="cp-gloss-item"><strong>WAF</strong> = Web Application Firewall</span> <span class="cp-gloss-item"><strong>S3</strong> = Simple Storage Service</span>
 </div>
 </section>
-<section class="slide level2 smaller-text" data-glossary-terms="IGW ALB WAS RDS DB">
-<h2>아키텍처: VPC 내부 리소스 배치</h2>
-<div class="cp-figure">
-<p><img data-src="assets/architecture-resource.png" height="530"></p>
+<section class="slide level2 smaller-text" data-glossary-terms="IGW ALB ASG WAS RDS Sync. Repl.">
+<h2>VPC 내부 구성</h2>
+<!-- 본문 너비(1120px)보다 넓게: 높이 575px이면 너비 1184px라 좌우로 32px씩 여백에 걸친다. -->
+<div class="cp-figure" style="margin-left: calc((100% - 1184px) / 2);">
+<p><img data-src="assets/architecture-resource.png" height="575"></p>
 </div>
 <div class="cp-glossary">
-<span class="cp-gloss-item"><strong>IGW</strong> = Internet Gateway</span> <span class="cp-gloss-item"><strong>ALB</strong> = Application Load Balancer</span>
+<span class="cp-gloss-item"><strong>IGW</strong> = Internet Gateway</span> <span class="cp-gloss-item"><strong>ALB</strong> = Application Load Balancer</span> <span class="cp-gloss-item"><strong>ASG</strong> = Auto Scaling Group</span> <span class="cp-gloss-item"><strong>Sync. Repl.</strong> = Synchronous Replication</span>
 </div>
 </section>
-<section class="slide level2 smaller-text">
-<h2>아키텍처: VPC IP 주소 설계</h2>
-<div class="cp-figure">
-<p><img data-src="assets/architecture-ip.png" height="530"></p>
+<section class="slide level2 smaller-text" data-glossary-terms="VPC IGW ALB ASG RDS">
+<h2>VPC IP 주소 설계</h2>
+<div class="cp-figure" style="margin-left: calc((100% - 1184px) / 2);">
+<p><img data-src="assets/architecture-ip.png" height="575"></p>
 </div>
 <div class="cp-glossary">
 <span class="cp-gloss-item"><strong>IP</strong> = Internet Protocol</span>
 </div>
 </section>
-<section class="slide level2 smaller-text">
-<h2>아키텍처: 보안 그룹 체이닝</h2>
+<section class="slide level2 smaller-text" data-glossary-terms="AZ">
+<h2>보안 그룹 체이닝</h2>
 <div>
 <div class="cp-chain">
   <span class="node">CloudFront<small>접두사 목록</small></span>
@@ -572,7 +507,7 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 <li>Session Manager로 EC2 인스턴스에 접속</li>
 </ul>
 <div class="cp-glossary">
-<span class="cp-gloss-item"><strong>EC2</strong> = Elastic Compute Cloud</span>
+<span class="cp-gloss-item"><strong>EC2</strong> = Elastic Compute Cloud</span> <span class="cp-gloss-item"><strong>AZ</strong> = Availability Zone</span>
 </div>
 </section></section>
 <section>
@@ -581,8 +516,7 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 <p>김건형</p>
 </section>
 <section class="slide level2 smaller-text">
-<h2>WAS: 호환성 검토와 취약점 보완</h2>
-<p><span class="tag">보안</span></p>
+<h2>호환성 검토와 취약점 보완</h2>
 <style>
 .reveal #was-flow {
   position: relative;
@@ -664,92 +598,33 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 </ul>
 <p><strong>검증 결과</strong></p>
 <ul>
-<li><span class="fragment cp-say" data-fragment-index="3">기존 Petclinic 테스트 통과 확인 후 WAR 파일 빌드</span></li>
+<li><span class="fragment cp-say" data-fragment-index="3">기존 펫 클리닉 테스트 통과 확인 후 WAR 파일 빌드</span></li>
 </ul>
 </div></div>
-<aside class="notes">
-<p>안녕하세요. 이번 팀프로젝트에서 WAS 구축을 맡은 김건형입니다. 먼저 기존 Java 8과 javax 기반 소스에 맞춰 환경을 구성하고, Tomcat과 Spring을 화면에 보이는 버전으로 업데이트했습니다.<br>
-업데이트한 Spring 버전도 DataBinder 관련 보안 취약점이 있어 입력 허용 필드를 제한했고, 반려동물 정보를 수정할 때 해당 보호자의 반려동물인지 검증하도록 했습니다. 코드를 수정한 뒤 기존 테스트가 모두 통과하는지 확인했고, WAR 파일도 정상적으로 빌드했습니다.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
 <div class="cp-glossary">
 <span class="cp-gloss-item"><strong>BOM</strong> = Bill of Materials</span> <span class="cp-gloss-item"><strong>CVE</strong> = Common Vulnerabilities and Exposures</span> <span class="cp-gloss-item"><strong>WAR</strong> = Web Application Archive</span>
 </div>
 </section>
 <section id="was-arm-layout" class="slide level2 smaller-text">
-<h2>WAS: ARM 아키텍처 기반 배포와 설정 외부화</h2>
-<style>
-#was-arm-layout .columns {
-  column-gap: 1.5em;
-}
-#was-arm-layout .was-topic {
-  border-bottom: 1px solid #d3dbe4;
-  padding-bottom: .35em;
-  margin-bottom: .6em;
-}
-#was-arm-layout .was-topic p {
-  margin: 0;
-}
-#was-arm-layout .was-small-icon {
-  font-size: .8em;
-  margin-right: .25em;
-}
-#was-arm-layout li {
-  margin-bottom: .45em;
-  line-height: 1.35;
-}
-</style>
+<h2>ARM 아키텍처 기반 배포와 설정 외부화</h2>
 <div class="columns">
-<div class="column" style="width:50%;">
+<div class="column" style="width:46%;">
 <p><strong>EC2 구성</strong></p>
-<div class="fragment cp-say" style="display:flex; align-items:center; gap:22px; margin:20px 0 0;">
+<div class="fragment cp-say" style="display:flex; align-items:center; gap:22px; margin:0.4em 0 0.8em;">
   <img src="assets/ec2.svg" alt="Amazon EC2" style="width:88px; height:88px; flex-shrink:0; margin:0;">
   <div style="min-width:0;">
-    <div style="font-weight:600;">Amazon Linux 2023</div>
-    <div style="margin-top:3px;">
-      <span class="hl">Graviton 기반 t4g.small</span> 
-    </div>
+    <div><strong>Amazon Linux 2023</strong></div>
+    <div style="margin-top:3px;"><span class="hl">Graviton 기반 t4g.small</span></div>
   </div>
 </div>
-
-
-<div style="font-weight:600; color:#0b2545; margin:38px 0 18px;">
-  ARM 아키텍처 기반 배포
-</div>
-
-<div style="display:grid; row-gap:18px; padding:8px 0; line-height:1.35;">
-
-  <div class="fragment cp-say" style="display:grid; grid-template-columns:32px minmax(0,1fr); column-gap:14px;">
-    <strong style="font-size:.8em; color:#2a5d8f;">01</strong>
-    <span>ARM 환경에서 Java 8과 Tomcat 동작 확인</span>
-  </div>
-
-  <div class="fragment cp-say" style="display:grid; grid-template-columns:32px minmax(0,1fr); column-gap:14px;">
-    <strong style="font-size:.8em; color:#2a5d8f;">02</strong>
-    <span>AWS Systems Manager로 WAR 파일 배포</span>
-  </div>
-
-  <div class="fragment cp-say" style="display:grid; grid-template-columns:32px minmax(0,1fr); column-gap:14px;">
-    <strong style="font-size:.8em; color:#2a5d8f;">03</strong>
-    <span>서비스 실행과 DB 연결 점검</span>
-  </div>
-
-</div>
-</div><div id="was-operations" class="column" style="width:50%;">
+<p><strong>ARM 아키텍처 기반 배포</strong></p>
+<ol type="1">
+<li><span class="fragment cp-say">ARM 환경에서 Java 8과 Tomcat 작동 확인</span></li>
+<li><span class="fragment cp-say">Session Manager로 WAR 파일 배포</span></li>
+<li><span class="fragment cp-say">서비스 실행과 DB 연결 점검</span></li>
+</ol>
+</div><div id="was-operations" class="column" style="width:54%;">
 <style>
-#was-operations li {
-  margin-bottom: .3em;
-  line-height: 1.3;
-}
 #was-operations .was-db {
   margin: 14px 0;
   border-left: 3px solid #2a5d8f;
@@ -763,15 +638,8 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
   font-size: .9em;
   margin: 8px 0;
 }
-#was-operations .was-db th,
-#was-operations .was-db td {
-  padding: 5px 8px;
-  line-height: 1.25;
-}
 </style>
-<div class="was-topic">
 <p><strong>운영 설정과 외부화</strong></p>
-</div>
 <div class="fragment cp-say">
 <ul>
 <li>Java 패키지 버전 고정으로 자동 업데이트 방지</li>
@@ -804,25 +672,12 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 <li><span class="fragment cp-say">서버 구성을 AMI와 시작 템플릿에 반영</span></li>
 </ul>
 </div></div>
-<aside class="notes">
-<p>서버에는 AWS가 제공하는 Amazon Linux 2023을 사용했고, 비용과 전력 효율을 고려해 Graviton 기반 t4g.small을 선택했습니다. ARM 아키텍처에서 Java 8과 Tomcat이 정상적으로 동작하는지 확인한 다음, AWS Systems Manager로 WAR 파일을 배포해 Petclinic 실행과 DB 연결을 점검했습니다. EC2 부팅 시 Tomcat도 자동시작 설정. DB 접속 설정은 소스에서 분리해 Parameter Store에 두고, 계정 정보는 Secrets Manager에서 관리하도록 했습니다. 그래서 설정이 바뀌어도 WAR를 재배포하지 않고 Tomcat을 재시작해 반영할 수 있습니다. 이 서버 구성은 AMI와 시작 템플릿에도 적용했습니다.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
 <div class="cp-glossary">
 <span class="cp-gloss-item"><strong>JDBC</strong> = Java Database Connectivity</span> <span class="cp-gloss-item"><strong>AMI</strong> = Amazon Machine Image</span>
 </div>
 </section>
 <section id="was-alb-slide" class="slide level2 smaller-text">
-<h2>WAS: 가용성 확보와 모니터링</h2>
+<h2>가용성 확보와 모니터링</h2>
 <style>
 #was-alb-slide .was-dashboard {
   margin:0;
@@ -855,7 +710,8 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 }
 #was-alb-slide .was-details h3 {
   margin:0 0 12px;
-  font-size:28px;
+  font-size:1em;
+  font-weight:600;
   line-height:1.25;
   color:#0b2545;
 }
@@ -866,7 +722,7 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 }
 #was-alb-slide .was-details li {
   margin:0;
-  font-size:25px;
+  font-size:1em;
   line-height:1.42;
   word-break:keep-all;
   color:#18222d;
@@ -876,12 +732,6 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 }
 #was-alb-slide .was-details strong {
   color:#0b2545;
-}
-#was-alb-slide .was-alert {
-  background:#ffe08a;
-  color:#0b2545;
-  padding:0 4px;
-  font-weight:700;
 }
 @media print {
   #was-alb-slide .fragment {
@@ -896,7 +746,7 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 
   <p class="was-caption">
     직접 구현한 대시보드로
-    <strong>요청 경로 · 응답 WAS · 타겟그룹 상태</strong> 확인
+    <strong>요청 경로, 응답 WAS, 타깃 그룹 상태</strong> 확인
   </p>
 </div>
 
@@ -907,7 +757,7 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 
     <ul>
       <li class="fragment cp-say" data-fragment-index="1">
-        WAS를 <strong>2a·2c에</strong> 분산 배치
+        WAS를 <strong>2a, 2c에</strong> 분산 배치
       </li>
 
       <li class="fragment cp-say" data-fragment-index="2">
@@ -929,7 +779,7 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
       </li>
 
       <li class="fragment cp-say" data-fragment-index="5">
-        정상 WAS가 <span class="was-alert">두 대 미만</span>이면<br>
+        정상 WAS가 <span class="hl">두 대 미만</span>이면<br>
         <strong>CloudWatch 경보 및 SNS 이메일 알림</strong>
       </li>
     </ul>
@@ -937,7 +787,7 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 
 </div>
 <div class="cp-glossary">
-<span class="cp-gloss-item"><strong>CPU</strong> = Central Processing Unit</span> <span class="cp-gloss-item"><strong>ASG</strong> = Auto Scaling Group</span> <span class="cp-gloss-item"><strong>SNS</strong> = Simple Notification Service</span>
+<span class="cp-gloss-item"><strong>CPU</strong> = Central Processing Unit</span> <span class="cp-gloss-item"><strong>SNS</strong> = Simple Notification Service</span>
 </div>
 </section></section>
 <section>
@@ -951,7 +801,7 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 -->
 </section>
 <section class="slide level2 smaller-text">
-<h2>DB 서버: RDS MySQL과 RDS Proxy</h2>
+<h2>RDS MySQL과 RDS Proxy</h2>
 <div class="lead">
 <!--안정적인 DB 운영을 위해 **가용성과 연결 안정성**을 중점적으로 고려했다.-->
 </div>
@@ -959,8 +809,8 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 <div class="column" style="width:48%;">
 <p><strong>RDS for MySQL 8.4</strong></p>
 <ul>
-<li><strong>MySQL 8.4 LTS</strong>: PetClinic MySQL 환경과의 호환성 및 장기 지원 확보</li>
-<li><strong>Multi-AZ</strong>: Single-AZ와 달리 Standby DB로 자동 전환해 장애 복구 시간 단축</li>
+<li><strong>MySQL 8.4 LTS</strong>: CRUD 중심 서비스 요구 사항과 운영 효율성 및 장기 지원 고려</li>
+<li><strong>Multi-AZ</strong>: DB 장애 시 Standby DB로 자동 전환하여 서비스 중단 시간 최소화</li>
 </ul>
 <hr>
 <table class="caption-top">
@@ -1016,11 +866,11 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 </table>
 </div></div>
 <div class="cp-glossary">
-<span class="cp-gloss-item"><strong>LTS</strong> = Long-Term Support</span> <span class="cp-gloss-item"><strong>AZ</strong> = Availability Zone</span> <span class="cp-gloss-item"><strong>RPS</strong> = Requests Per Second</span>
+<span class="cp-gloss-item"><strong>LTS</strong> = Long-Term Support</span> <span class="cp-gloss-item"><strong>RPS</strong> = Requests Per Second</span>
 </div>
 </section>
 <section class="slide level2 smaller-text">
-<h2>DB 서버: DB 보안 구성과 데이터 적재</h2>
+<h2>DB 보안 구성과 데이터 적재</h2>
 <p><strong>계정</strong></p>
 <ul>
 <li><span><strong>최소 권한</strong>: WAS 전용 계정에 petclinic DB의 <span class="hl">필요 권한만 부여</span></span></li>
@@ -1042,7 +892,7 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 </section>
 <section class="slide level2 smaller-text">
 <h2>Apache 리버스 프록시</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-code-line-numbers="|5-6|9-16"><pre class="sourceCode numberSource apache number-lines code-with-copy"><code class="sourceCode apache"><span id="cb1-1"><a href="" aria-label="1"></a><span class="fu">&lt;VirtualHost</span><span class="at"> *:80</span><span class="fu">&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-code-line-numbers="|5-6|7-10"><pre class="sourceCode numberSource apache number-lines code-with-copy"><code class="sourceCode apache"><span id="cb1-1"><a href="" aria-label="1"></a><span class="fu">&lt;VirtualHost</span><span class="at"> *:80</span><span class="fu">&gt;</span></span>
 <span id="cb1-2"><a href="" aria-label="2"></a>    ProxyAddHeaders On</span>
 <span id="cb1-3"><a href="" aria-label="3"></a>    <span class="ex">ProxyPreserveHost</span><span class="ch"> </span><span class="kw">On</span></span>
 <span id="cb1-4"><a href="" aria-label="4"></a>    <span class="ex">RewriteEngine</span><span class="ch"> </span><span class="kw">On</span></span>
@@ -1054,23 +904,10 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 <span id="cb1-10"><a href="" aria-label="10"></a>    ProxyPassReverse<span class="st"> "/petclinic/" "http://&lt;INTERNAL_ALB_DNS&gt;/petclinic/"</span></span>
 <span id="cb1-11"><a href="" aria-label="11"></a><span class="fu">&lt;/VirtualHost&gt;</span></span></code></pre></div><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
-<li><code>/petclinic/</code>만 WAS로 넘기고, 나머지는 Apache가 직접 응답한다.</li>
-<li>내부 ALB는 IP가 아니라 <strong>DNS 이름</strong>으로 가킨다.</li>
-<li>SELinux에서 <code>httpd_can_network_connect</code> 허용한다.</li>
+<li><code>/petclinic/</code>만 WAS로 넘기고, 나머지는 Apache가 직접 응답</li>
+<li>내부 ALB를 IP가 아닌 <strong>DNS 이름</strong>으로 지정</li>
+<li>SELinux에서 <code>httpd_can_network_connect</code> 허용</li>
 </ul>
-<aside class="notes">
-<p>45초. ttl을 ALB 유휴 시간보다 짧게 두는 이유(ALB가 먼저 끊은 연결을 다시 쓰면 502)를 한 문장으로.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
 <div class="cp-glossary">
 <span class="cp-gloss-item"><strong>DNS</strong> = Domain Name System</span> <span class="cp-gloss-item"><strong>SELinux</strong> = Security-Enhanced Linux</span>
 </div>
@@ -1078,21 +915,19 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 <section class="slide level2 smaller-text">
 <h2>CloudFront와 외부 ALB 보호</h2>
 <div class="columns">
-<div class="column" style="width:48%;">
+<div class="column" style="width:50%;">
 <p><strong>CloudFront (정액 요금제 Free)</strong></p>
 <ul>
-<li>사용자 구간만 HTTPS. ALB에는 인증서가 없어 오리진은 HTTP</li>
+<li>사용자 구간만 HTTPS, ALB에는 인증서가 없어 오리진은 HTTP</li>
 <li>동적 페이지라 캐싱 비활성화, 쿼리 문자열과 쿠키는 모두 전달</li>
 <li>오류 시 S3의 오류 페이지 (<code>/pet_*</code>, OAC)</li>
-<li>WAF 속도 제한: IP마다 5분에 300건 (현재 모니터 모드)</li>
+<li><strong>WAF 속도 제한</strong>: IP마다 5분에 300건 (현재 모니터 모드)</li>
 </ul>
-</div><div class="column" style="width:4%;">
-
-</div><div class="column" style="width:48%;">
+</div><div class="column" style="width:50%;">
 <p><strong>외부 ALB에 CloudFront만 닿게</strong></p>
 <ol type="1">
-<li>보안 그룹: CloudFront 관리형 <strong>접두사 목록</strong>만 허용</li>
-<li>리스너: <strong>비밀 헤더</strong>를 포함한 요청만 전달, 나머지는 403</li>
+<li><strong>보안 그룹</strong>: CloudFront 관리형 <strong>접두사 목록</strong>만 허용</li>
+<li><strong>리스너</strong>: <strong>비밀 헤더</strong>를 포함한 요청만 전달, 나머지는 403</li>
 </ol>
 <div class="quarto-figure quarto-figure-center">
 <figure>
@@ -1100,19 +935,6 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 </figure>
 </div>
 </div></div>
-<aside class="notes">
-<p>45초. VPC 오리진을 쓰면 ALB를 internal로 둘 수 있지만 정액 요금제 Business(월 200 USD) 이상이 필요해서 internet-facing ALB + 두 겹 보호를 택했다고 말한다.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
 <div class="cp-glossary">
 <span class="cp-gloss-item"><strong>HTTPS</strong> = HTTP Secure</span> <span class="cp-gloss-item"><strong>HTTP</strong> = Hypertext Transfer Protocol</span> <span class="cp-gloss-item"><strong>OAC</strong> = Origin Access Control</span>
 </div>
@@ -1138,7 +960,7 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 -->
 </section>
 <section class="slide level2 smaller-text">
-<h2>검증: k6 부하 시험</h2>
+<h2>k6 부하 시험</h2>
 <div class="columns">
 <div class="column" style="width:42%;">
 <p><strong>시험 방법</strong></p>
@@ -1146,7 +968,7 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 <li>패키지 버킷에서 <strong>k6 ARM 실행 파일 반입</strong></li>
 <li>테스트 데이터 <strong>10만 건 적재</strong></li>
 <li><strong>800 RPS로 5분간</strong> 요청</li>
-<li><strong>조회·등록·수정</strong> 요청을 혼합</li>
+<li><strong>조회, 등록, 수정</strong> 요청을 혼합</li>
 </ul>
 </div><div class="column" style="width:58%;">
 <p><strong>시험 결과</strong></p>
@@ -1161,48 +983,35 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 </colgroup>
 <thead>
 <tr class="header">
-<th>계층·인스턴스</th>
-<th>CPU·메모리 측정값과 판정</th>
+<th>계층과 인스턴스</th>
+<th>CPU, 메모리 측정값과 판정</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>웹 <code>t4g.micro</code></td>
+<td>웹 t4g.micro</td>
 <td>CPU 9.8%, 메모리 35.9%<br><strong>둘 다 70% 기준 <span class="cp-load-pass">충족</span></strong></td>
 </tr>
 <tr class="even">
-<td>WAS <code>t4g.small</code></td>
+<td>WAS t4g.small</td>
 <td>CPU 75.8%, 메모리 55.3%<br><strong>CPU <span class="cp-load-fail">초과</span>, 메모리 <span class="cp-load-pass">충족</span></strong></td>
 </tr>
 <tr class="odd">
-<td>RDS <code>db.t4g.small</code></td>
+<td>RDS db.t4g.small</td>
 <td>CPU 44.3%,<br>가용 메모리 601.3&nbsp;MiB<br><strong>CPU 기준 <span class="cp-load-pass">충족</span></strong></td>
 </tr>
 </tbody>
 </table>
 </div>
 </div></div>
-<p><strong>결론:</strong> WAS CPU가 70%를 넘어, ASG 자동 확장으로 부하 증가에 대응한다.</p>
-<aside class="notes">
-<p>인터넷이 없는 ARM 부하 발생 인스턴스에 패키지 버킷으로 k6 실행 파일을 반입했다. 테스트 데이터 10만 건을 적재한 뒤 조회·등록·수정 요청을 섞어 800 RPS로 5분간 시험했다. p95 응답 시간은 95 ms였고 실패율은 0%였다. 웹은 CPU와 메모리가 모두 70% 아래였다. WAS는 메모리 55.3%는 기준을 충족했지만 CPU가 75.8%로 기준을 넘었다. RDS CPU는 44.3%로 기준을 충족했고 가용 메모리는 601.3 MiB였다. WAS는 CPU 기준을 넘어 ASG 자동 확장으로 부하 증가에 대응한다.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
+<p><strong>결론</strong>: WAS CPU가 70%를 초과하여 ASG 자동 확장으로 부하 증가에 대응하도록 결정</p>
 <!-- 블록: 부하 시험 -->
 <div class="cp-glossary">
 <span class="cp-gloss-item"><strong>p95</strong> = 95번째 백분위수</span>
 </div>
 </section>
 <section class="slide level2 smaller-text">
-<h2>시연: WAS 자동 확장 시나리오</h2>
+<h2>WAS 자동 확장 시나리오</h2>
 <p><strong>요청 시나리오</strong></p>
 <ul>
 <li>24시간 요청 패턴을 <strong>40분에 재현</strong></li>
@@ -1225,66 +1034,270 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 </div>
 </div>
 </div>
-<aside class="notes">
-<p>동물병원 3,000개 지점의 하루 요청 패턴을 더미 데이터로 만들고 40분에 재현한다. 업무 피크는 09:00~11:00이며, 09:00~10:00의 시간 평균이 819.47 RPS로 가장 높다. 이 구간에서 WAS ASG 확장을 예상하고 다음 영상에서 확인한다.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
 </section>
 <section class="slide level2 smaller-text">
-<h2>시연: WAS 자동 확장 시나리오</h2>
+<h2>WAS 자동 확장 시나리오</h2>
 <div class="screen-only center-text">
 <iframe data-external="1" src="https://www.youtube.com/embed/A4oH677hP7Q" width="960" height="540" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
 </div>
 <div class="print-only">
 <p><img data-src="assets/demo-load-test.png" height="480"></p>
-<p><a href="https://www.youtube.com/watch?v=A4oH677hP7Q" class="muted">https://www.youtube.com/watch?v=A4oH677hP7Q</a></p>
+<p><a href="https://www.youtube.com/watch?v=A4oH677hP7Q" class="muted">시연 영상 보기</a></p>
 </div>
-<aside class="notes">
-<p>영상: Cloud9 AWS 부하테스트 시연 영상</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
 <!-- 블록: WAS 장애 복구 -->
 </section>
-<section class="slide level2 smaller-text">
-<h2>시연: WAS 장애 시 서비스 복구</h2>
-<div class="screen-only center-text">
-<iframe data-external="1" src="https://www.youtube.com/embed/tnnP2QoxblA" width="960" height="540" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+<section id="route-compare-slide" class="slide level2 smaller-text">
+<h2>ALB 타깃 그룹 현황 대시보드</h2>
+<style>
+#route-compare-slide .route-intro {
+  margin: 0 0 15px;
+  text-align: center;
+  font-size: 21px;
+  color: #18222d;
+}
+#route-compare-slide .route-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  width: 100%;
+}
+#route-compare-slide .route-card {
+  margin: 0;
+  padding: 8px;
+  border: 1px solid #d8e0e9;
+  border-radius: 10px;
+  background: #f7f9fc;
+}
+#route-compare-slide .route-image {
+  width: 100%;
+  aspect-ratio: 2.75 / 1;
+  overflow: hidden;
+}
+#route-compare-slide .route-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  object-fit: cover;
+  object-position: center top;
+  border: 0;
+  box-shadow: none;
+}
+#route-compare-slide .route-caption {
+  margin: 10px 0 4px;
+  text-align: center;
+  font-size: 23px;
+  line-height: 1.25;
+  color: #18222d;
+}
+#route-compare-slide .route-fields-title {
+  margin: 18px 0 10px;
+  padding-top: 12px;
+  border-top: 1px solid #d3dbe4;
+  font-size: 22px;
+  font-weight: 700;
+  color: #0b2545;
+  text-align: left;
+}
+#route-compare-slide .route-fields {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+#route-compare-slide .route-field {
+  padding-left: 12px;
+  border-left: 3px solid #c5d5e5;
+  font-size: 20px;
+  line-height: 1.32;
+  text-align: left;
+  color: #18222d;
+  word-break: keep-all;
+}
+#route-compare-slide .route-field strong {
+  display: block;
+  margin-bottom: 3px;
+  color: #0b2545;
+}
+#route-compare-slide .route-line {
+  margin: 16px 0 0;
+  padding-top: 10px;
+  border-top: 1px solid #d3dbe4;
+  font-size: 20px;
+  color: #18222d;
+  text-align: center;
+}
+#route-compare-slide .route-line strong {
+  color: #0b2545;
+}
+</style>
+
+<p class="route-intro">
+  같은 whoami.jsp를 새로고침해 두 번의 요청 Route를 비교합니다.
+</p>
+
+<div class="route-pair">
+  <figure class="route-card">
+    <div class="route-image">
+      <img src="assets/dash1.png" alt="첫 요청에서 웹 서버 2c와 WAS 2a가 선택된 화면">
+    </div>
+    <figcaption class="route-caption">
+      Route ① <strong>웹 서버 2c → WAS 2a</strong>
+    </figcaption>
+  </figure>
+
+  <figure class="route-card">
+    <div class="route-image">
+      <img src="assets/dash2.png" alt="두 번째 요청에서 웹 서버 2a와 WAS 2c가 선택된 화면">
+    </div>
+    <figcaption class="route-caption">
+      Route ② <strong>웹 서버 2a → WAS 2c</strong>
+    </figcaption>
+  </figure>
+</div>
+
+<div class="route-fields-title">박스 안에는 무엇이 표시되나?</div>
+<div class="route-fields">
+  <div class="route-field">
+    <strong>CloudFront, ALB</strong>요청이 지나는 지점의 이름과 표시된 IP
+  </div>
+  <div class="route-field">
+    <strong>웹 서버, WAS EC2</strong>인스턴스 ID 일부와 타깃 상태(healthy 등)
+  </div>
+  <div class="route-field">
+    <strong>현재 웹 서버, WAS IP</strong>이번 요청에 응답한 서버의 IP와 가용 영역
+  </div>
+</div>
+
+<p class="route-line">
+   가지들은 ALB의 타깃 후보, 빨간 원은 이번 요청이 선택한 경로
+</p>
+<p style="margin: 12px 0 0; padding: 10px 16px; border-left: 4px solid #2563a6; background: #f2f6fb; color: #18222d; font-size: 19px; text-align: left;">
+  타깃 그룹의 헬스 체크 결과와 ALB가 실제로 연결한 웹 서버, WAS를 함께 보여줘, 어느 서버가 정상이고 이번 요청에 응답했는지 확인합니다.
+</p>
+</section>
+<section id="was-failover-demo" class="slide level2 smaller-text">
+<h2>WAS 장애 시 서비스 복구</h2>
+<style>
+#was-failover-demo .demo-scenario {
+  margin: 0 0 14px;
+  padding: 10px 15px;
+  border-left: 4px solid #2563a6;
+  background: #f2f6fb;
+  color: #18222d;
+  font-size: 19px;
+  line-height: 1.35;
+  text-align: left;
+  word-break: keep-all;
+}
+
+#was-failover-demo .demo-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2.15fr) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+#was-failover-demo .demo-video {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+#was-failover-demo .demo-video > div {
+  width: 100%;
+  height: 100%;
+}
+
+#was-failover-demo .demo-video iframe {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  border: 0;
+  border-radius: 10px;
+}
+
+#was-failover-demo .demo-events {
+  text-align: left;
+}
+
+#was-failover-demo .demo-event.fragment {
+  margin: 0 0 5px;
+  padding: 5px 0 5px 11px;
+  border-left: 3px solid #d7dde5;
+  font-size: 18px;
+  line-height: 1.2;
+  font-weight: 600;
+  word-break: keep-all;
+  opacity: 1 !important;
+  visibility: visible !important;
+  color: #a5acb5 !important;
+}
+
+#was-failover-demo .demo-event.fragment.visible {
+  color: #18222d !important;
+}
+
+#was-failover-demo .demo-event.fragment.current-fragment {
+  border-left-color: #2563a6;
+}
+
+#was-failover-demo .demo-event small {
+  display: block;
+  margin-top: 2px;
+  font-size: 15px;
+  font-weight: 400;
+}
+</style>
+<div class="demo-scenario">
+<p>2c 가용 영역에 문제가 생긴 상황을 가정하고, Tomcat을 중지해 WAS 장애를 재현합니다. 이후 교체 WAS가 2a에 생성되어 정상 상태가 되는 과정을 확인합니다.</p>
+</div>
+<div class="screen-only">
+<div class="demo-grid">
+<div class="demo-video">
+<iframe data-external="1" src="https://www.youtube.com/embed/tnnP2QoxblA" width="640" height="360" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+</div>
+<div class="demo-events">
+<div class="demo-event fragment">
+정상 요청 분산
+</div>
+<div class="demo-event fragment">
+CloudShell 명령 실행
+</div>
+<div class="demo-event fragment">
+일시적 502 응답
+</div>
+<div class="demo-event fragment">
+다른 ALB로 연결
+</div>
+<div class="demo-event fragment">
+2c WAS unhealthy, 2a 응답
+</div>
+<div class="demo-event fragment">
+교체 EC2 생성
+</div>
+<div class="demo-event fragment">
+새 WAS healthy
+</div>
+<div class="demo-event fragment">
+새 EC2의 2a 배치 확인
+</div>
+<div class="demo-event fragment">
+이메일 알림 도착
+</div>
+<div class="demo-event fragment">
+기존 WAS draining<small>타깃 그룹에서 제외 중</small>
+</div>
+<div class="demo-event fragment">
+기존 WAS 제거 완료
+</div>
+</div>
+</div>
 </div>
 <div class="print-only">
 <p><img data-src="assets/demo-was-failover.png" height="480"></p>
-<p><a href="https://www.youtube.com/watch?v=tnnP2QoxblA" class="muted">https://www.youtube.com/watch?v=tnnP2QoxblA</a></p>
+<p><a href="https://www.youtube.com/watch?v=tnnP2QoxblA" class="muted">시연 영상 보기</a></p>
 </div>
-<aside class="notes">
-<p>영상: cloud9 AWS WAS 장애 발생시 정상 가용영역 서비스 복구 시연 영상</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
 </section></section>
 <section>
 <section class="title-slide slide level1 section-slide center" data-background-color="#0b2545">
@@ -1292,7 +1305,7 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 <p>김건형</p>
 </section>
 <section class="slide level2 smaller-text">
-<h2>마무리: 최종 결과물</h2>
+<h2>최종 결과물</h2>
 <ul>
 <li><strong>설계도</strong>: 3계층, AZ 두 곳, NAT 게이트웨이 없는 구성</li>
 <li><strong>절차서 (Wiki)</strong>: 구축 단계 전체<br>
@@ -1635,7 +1648,11 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
 
            each 100 px of travel is one step. Ctrl+wheel is left to the browser
 
-           (zoom). */
+           (zoom). The wheel is also left alone while the slide menu is open
+
+           (it scrolls the table of contents) and in the overview (Esc), where
+
+           a step per notch would fly past the grid. */
 
         (function () {
 
@@ -1660,6 +1677,10 @@ Cloud 9: 김태준(팀장), 김건형, 김승환, 양진현, 우수빈
           document.addEventListener("wheel", function (e) {
 
             if (isPrintView() || e.ctrlKey || !window.Reveal) return;
+
+            if (document.body.classList.contains("slide-menu-active")) return;
+
+            if (Reveal.isOverview()) return;
 
             var d = px(e);
 
